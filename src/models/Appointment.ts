@@ -12,9 +12,9 @@ import { AppointmentStatus } from "./AppointmentStatus";
 import { Doctor } from "./Doctor";
 import { Invoices } from "./Invoices";
 
-@Index("doctor_id", ["doctorId"], {})
-@Index("status_id", ["statusId"], {})
 @Index("time_id", ["timeId"], {})
+@Index("status_id", ["statusId"], {})
+@Index("doctor_id", ["doctorId"], {})
 @Entity("appointment", { schema: "sdoctor" })
 export class Appointment {
   @PrimaryGeneratedColumn({ type: "int", name: "id" })

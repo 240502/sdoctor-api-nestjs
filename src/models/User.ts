@@ -7,6 +7,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
+import { Doctor } from "./Doctor";
 import { Notifications } from "./Notifications";
 import { Role } from "./Role";
 
@@ -57,6 +58,9 @@ export class User {
 
   @Column("varchar", { name: "commune", nullable: true, length: 255 })
   commune: string | null;
+
+  @OneToMany(() => Doctor, (doctor) => doctor.user)
+  doctors: Doctor[];
 
   @OneToMany(() => Notifications, (notifications) => notifications.user)
   notifications: Notifications[];

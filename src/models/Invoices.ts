@@ -11,10 +11,10 @@ import { Doctor } from "./Doctor";
 import { Appointment } from "./Appointment";
 import { PaymentMethod } from "./PaymentMethod";
 
-@Index("appointment_id", ["appointmentId"], {})
-@Index("doctor_id", ["doctorId"], {})
-@Index("payment_method", ["paymentMethod"], {})
 @Index("service_id", ["serviceId"], {})
+@Index("doctor_id", ["doctorId"], {})
+@Index("appointment_id", ["appointmentId"], {})
+@Index("payment_method", ["paymentMethod"], {})
 @Entity("invoices", { schema: "sdoctor" })
 export class Invoices {
   @PrimaryGeneratedColumn({ type: "int", name: "id" })

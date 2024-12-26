@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseHelper } from 'src/common/database/helper';
-import { Role } from 'src/models/entities/Role';
+import { Role } from 'src/models/Role';
 @Injectable()
 export class RoleService {
   constructor(private readonly helper: DatabaseHelper) {}

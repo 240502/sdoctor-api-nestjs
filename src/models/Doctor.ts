@@ -10,12 +10,14 @@ import {
 import { Appointment } from "./Appointment";
 import { Comment } from "./Comment";
 import { Clinic } from "./Clinic";
+import { User } from "./User";
 import { Major } from "./Major";
 import { DoctorSchedule } from "./DoctorSchedule";
 import { Invoices } from "./Invoices";
 
-@Index("clinic_id", ["clinicId"], {})
 @Index("major_id", ["majorId"], {})
+@Index("clinic_id", ["clinicId"], {})
+@Index("user_id", ["userId"], {})
 @Entity("doctor", { schema: "sdoctor" })
 export class Doctor {
   @PrimaryGeneratedColumn({ type: "int", name: "doctor_id" })
@@ -66,6 +68,13 @@ export class Doctor {
   })
   @JoinColumn([{ name: "clinic_id", referencedColumnName: "id" }])
   clinic: Clinic;
+
+  @ManyToOne(() => User, (user) => user.doctors, {
+    onDelete: "NO ACTION",
+    onUpdate: "NO ACTION",
+  })
+  @JoinColumn([{ name: "user_id", referencedColumnName: "userId" }])
+  user: User;
 
   @ManyToOne(() => Major, (major) => major.doctors, {
     onDelete: "NO ACTION",

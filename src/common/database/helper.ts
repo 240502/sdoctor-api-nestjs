@@ -14,16 +14,14 @@ export class DatabaseHelper {
       if (inputParams.length > 0) {
         placeholders = inputParams.map(() => '?').join(',');
       }
-      const sql = `CALL ${procedureName}(${placeholders}@err_code,@err_msg)`;
-      const [results] = await queryRunner.query(sql, inputParams);
-
+      const sql = `CALL ${procedureName}(${placeholders}${placeholders.length > 0 ? ',' : ' '}@err_code,@err_msg)`;
+      const results = await queryRunner.query(sql, inputParams);
       const [errorResults] = await queryRunner.query(
         `SELECT @err_code AS err_code ,@err_msg AS err_msg`,
       );
       const { err_code, err_msg } = errorResults;
-
       if (err_code === '0') {
-        return results; // Trả về mảng bản ghi
+        return results[0]; // Trả về mảng bản ghi
       } else {
         throw new Error(err_msg);
       }
