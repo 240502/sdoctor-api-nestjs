@@ -21,7 +21,7 @@ export class DatabaseHelper {
       );
       const { err_code, err_msg } = errorResults;
       if (err_code === '0') {
-        return results[0]; // Trả về mảng bản ghi
+        return results[0];
       } else {
         throw new Error(err_msg);
       }

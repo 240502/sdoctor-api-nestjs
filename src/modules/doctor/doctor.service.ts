@@ -46,7 +46,6 @@ export class DoctorService {
         clinicId,
       ]);
       if (Array.isArray(results) && results.length > 0) {
-        console.log(results);
         return results;
       } else {
         return null;
@@ -74,6 +73,53 @@ export class DoctorService {
       } else {
         return null;
       }
+    } catch (err: any) {
+      throw new Error(err.message);
+    }
+  }
+
+  async getDoctorByUserId(userId: number): Promise<Doctor | null> {
+    try {
+      const procedureName = 'GetDoctorByUserId';
+      const results = await this.db.callProcedure(procedureName, [userId]);
+      if (Array.isArray(results) && results.length > 0) {
+        return results[0];
+      } else return null;
+    } catch (err: any) {
+      throw new Error(err.message);
+    }
+  }
+  async updateDoctorViews(doctorId: number): Promise<any> {
+    try {
+      const procedureName = 'UpdateViewsDoctor';
+      await this.db.callProcedure(procedureName, [doctorId]);
+      return true;
+    } catch (err: any) {
+      throw new Error(err.message);
+    }
+  }
+
+  async getCommonDoctor(pageIndex: number, pageSize: number): Promise<any> {
+    try {
+      const procedureName = 'GetCommonDoctor';
+      const results = await this.db.callProcedure(procedureName, [
+        pageIndex,
+        pageSize,
+      ]);
+      if (Array.isArray(results) && results.length > 0) {
+        return results;
+      } else {
+        return null;
+      }
+    } catch (err: any) {
+      throw new Error(err.message);
+    }
+  }
+  async updateAverageStars(doctorId: number): Promise<any> {
+    try {
+      const procedureName = 'UpdateAverageStarDoctor';
+      await this.db.callProcedure(procedureName, [doctorId]);
+      return true;
     } catch (err: any) {
       throw new Error(err.message);
     }
