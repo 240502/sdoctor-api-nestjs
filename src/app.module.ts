@@ -9,6 +9,7 @@ import { ClinicModule } from './modules/clinic/clinic.module';
 import { CommentModule } from './modules/comment/comment.module';
 import { ServiceModule } from './modules/service/service.module';
 import { PostModule } from './modules/post/post.module';
+import { DoctorScheduleModule } from './modules/doctor-schedule/doctor-schedule.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -32,6 +33,7 @@ import { PostModule } from './modules/post/post.module';
     CommentModule,
     ServiceModule,
     PostModule,
+    DoctorScheduleModule,
   ],
   providers: [],
 })
