@@ -13,6 +13,9 @@ import { DoctorScheduleModule } from './modules/doctor-schedule/doctor-schedule.
 import { AppointmentStatusModule } from './modules/appointment-status/appointment-status.module';
 import { DoctorScheduleDetailModule } from './modules/doctor-schedule-detail/doctor-schedule-detail.module';
 import { DoctorServiceModule } from './modules/doctor-service/doctor-service.module';
+import { HomeMenuModule } from './modules/home-menu/home-menu.module';
+import { InvoiceModule } from './modules/invoice/invoice.module';
+import { MajorModule } from './modules/major/major.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -38,6 +41,9 @@ import { DoctorServiceModule } from './modules/doctor-service/doctor-service.mod
     AppointmentStatusModule,
     DoctorScheduleDetailModule,
     DoctorServiceModule,
+    HomeMenuModule,
+    InvoiceModule,
+    MajorModule,
   ],
   providers: [],
   controllers: [],
