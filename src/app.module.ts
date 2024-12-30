@@ -1,11 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RoleModule } from './modules/role/role.module';
-import { DoctorService } from './modules/doctor/doctor.service';
 import { DoctorModule } from './modules/doctor/doctor.module';
 import { MailerModule } from './modules/mailer/mailer.module';
 import { AppointmentModule } from './modules/appointment/appointment.module';
-import { AuthService } from './modules/auth/auth.service';
 import { AuthModule } from './modules/auth/auth.module';
 import { ClinicModule } from './modules/clinic/clinic.module';
 import { CommentModule } from './modules/comment/comment.module';
