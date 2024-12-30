@@ -10,6 +10,9 @@ import { CommentModule } from './modules/comment/comment.module';
 import { ServiceModule } from './modules/service/service.module';
 import { PostModule } from './modules/post/post.module';
 import { DoctorScheduleModule } from './modules/doctor-schedule/doctor-schedule.module';
+import { AppointmentStatusModule } from './modules/appointment-status/appointment-status.module';
+import { DoctorScheduleDetailModule } from './modules/doctor-schedule-detail/doctor-schedule-detail.module';
+import { DoctorServiceModule } from './modules/doctor-service/doctor-service.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -19,9 +22,7 @@ import { DoctorScheduleModule } from './modules/doctor-schedule/doctor-schedule.
       username: 'root',
       password: 'root',
       database: 'sdoctor',
-      entities: [
-        __dirname + '/**/*.entity{.ts,.js}',
-      ],
+      entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
     }),
     RoleModule,
@@ -34,7 +35,11 @@ import { DoctorScheduleModule } from './modules/doctor-schedule/doctor-schedule.
     ServiceModule,
     PostModule,
     DoctorScheduleModule,
+    AppointmentStatusModule,
+    DoctorScheduleDetailModule,
+    DoctorServiceModule,
   ],
   providers: [],
+  controllers: [],
 })
 export class AppModule {}

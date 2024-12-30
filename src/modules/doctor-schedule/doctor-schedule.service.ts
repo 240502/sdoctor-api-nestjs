@@ -88,9 +88,11 @@ export class DoctorScheduleService {
     try {
       const procedureName = 'ViewSchedule';
       const results = await this.db.callProcedure(procedureName, [
-        date,
         doctorId,
+        date,
       ]);
+      console.log(results);
+
       if (Array.isArray(results) && results.length > 0) {
         const listScheduleDetails: DoctorScheduleDetail[] = [];
         for (let i = 0; i < results.length; i++) {
