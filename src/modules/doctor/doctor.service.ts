@@ -1,10 +1,15 @@
-import { Injectable, Query } from '@nestjs/common';
+import {
+  Injectable,
+  Query,
+} from '@nestjs/common';
 import { DatabaseHelper } from 'src/common/database/helper';
 import { Doctor } from 'src/models/Doctor';
 @Injectable()
 export class DoctorService {
   constructor(private db: DatabaseHelper) {}
-  async createDoctor(doctor: Doctor): Promise<any> {
+  async createDoctor(
+    doctor: Doctor,
+  ): Promise<any> {
     try {
       const procedureName = 'CreateDoctor';
       await this.db.callProcedure(procedureName, [
@@ -38,14 +43,21 @@ export class DoctorService {
   ): Promise<Doctor[] | null> {
     try {
       const procedureName = 'GetDoctorView';
-      const results = await this.db.callProcedure(procedureName, [
-        pageIndex,
-        pageSize,
-        majorId,
-        name,
-        clinicId,
-      ]);
-      if (Array.isArray(results) && results.length > 0) {
+      const results: Doctor[] =
+        await this.db.callProcedure(
+          procedureName,
+          [
+            pageIndex,
+            pageSize,
+            majorId,
+            name,
+            clinicId,
+          ],
+        );
+      if (
+        Array.isArray(results) &&
+        results.length > 0
+      ) {
         return results;
       } else {
         return null;
@@ -58,17 +70,27 @@ export class DoctorService {
   async deleteDoctor(id: number): Promise<any> {
     try {
       const procedureName = 'DeleteDoctor';
-      await this.db.callProcedure(procedureName, [id]);
+      await this.db.callProcedure(procedureName, [
+        id,
+      ]);
     } catch (err: any) {
       throw new Error(err);
     }
   }
 
-  async getDoctorById(id: number): Promise<Doctor | null> {
+  async getDoctorById(
+    id: number,
+  ): Promise<Doctor | null> {
     try {
       const procedureName = 'GetDoctorById';
-      const results = await this.db.callProcedure(procedureName, [id]);
-      if (Array.isArray(results) && results.length > 0) {
+      const results = await this.db.callProcedure(
+        procedureName,
+        [id],
+      );
+      if (
+        Array.isArray(results) &&
+        results.length > 0
+      ) {
         return results[0];
       } else {
         return null;
@@ -78,35 +100,53 @@ export class DoctorService {
     }
   }
 
-  async getDoctorByUserId(userId: number): Promise<Doctor | null> {
+  async getDoctorByUserId(
+    userId: number,
+  ): Promise<Doctor | null> {
     try {
       const procedureName = 'GetDoctorByUserId';
-      const results = await this.db.callProcedure(procedureName, [userId]);
-      if (Array.isArray(results) && results.length > 0) {
+      const results = await this.db.callProcedure(
+        procedureName,
+        [userId],
+      );
+      if (
+        Array.isArray(results) &&
+        results.length > 0
+      ) {
         return results[0];
       } else return null;
     } catch (err: any) {
       throw new Error(err.message);
     }
   }
-  async updateDoctorViews(doctorId: number): Promise<any> {
+  async updateDoctorViews(
+    doctorId: number,
+  ): Promise<any> {
     try {
       const procedureName = 'UpdateViewsDoctor';
-      await this.db.callProcedure(procedureName, [doctorId]);
+      await this.db.callProcedure(procedureName, [
+        doctorId,
+      ]);
       return true;
     } catch (err: any) {
       throw new Error(err.message);
     }
   }
 
-  async getCommonDoctor(pageIndex: number, pageSize: number): Promise<any> {
+  async getCommonDoctor(
+    pageIndex: number,
+    pageSize: number,
+  ): Promise<any> {
     try {
       const procedureName = 'GetCommonDoctor';
-      const results = await this.db.callProcedure(procedureName, [
-        pageIndex,
-        pageSize,
-      ]);
-      if (Array.isArray(results) && results.length > 0) {
+      const results = await this.db.callProcedure(
+        procedureName,
+        [pageIndex, pageSize],
+      );
+      if (
+        Array.isArray(results) &&
+        results.length > 0
+      ) {
         return results;
       } else {
         return null;
@@ -115,10 +155,15 @@ export class DoctorService {
       throw new Error(err.message);
     }
   }
-  async updateAverageStars(doctorId: number): Promise<any> {
+  async updateAverageStars(
+    doctorId: number,
+  ): Promise<any> {
     try {
-      const procedureName = 'UpdateAverageStarDoctor';
-      await this.db.callProcedure(procedureName, [doctorId]);
+      const procedureName =
+        'UpdateAverageStarDoctor';
+      await this.db.callProcedure(procedureName, [
+        doctorId,
+      ]);
       return true;
     } catch (err: any) {
       throw new Error(err.message);

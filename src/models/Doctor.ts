@@ -6,86 +6,161 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
-} from "typeorm";
-import { Appointment } from "./Appointment";
-import { Comment } from "./Comment";
-import { Clinic } from "./Clinic";
-import { User } from "./User";
-import { Major } from "./Major";
-import { DoctorSchedule } from "./DoctorSchedule";
-import { Invoices } from "./Invoices";
+} from 'typeorm';
+import { Appointment } from './Appointment';
+import { Comment } from './Comment';
+import { Clinic } from './Clinic';
+import { User } from './User';
+import { Major } from './Major';
+import { DoctorSchedule } from './DoctorSchedule';
+import { Invoices } from './Invoices';
 
-@Index("major_id", ["majorId"], {})
-@Index("clinic_id", ["clinicId"], {})
-@Index("user_id", ["userId"], {})
-@Entity("doctor", { schema: "sdoctor" })
+@Index('major_id', ['majorId'], {})
+@Index('clinic_id', ['clinicId'], {})
+@Index('user_id', ['userId'], {})
+@Entity('doctor', { schema: 'sdoctor' })
 export class Doctor {
-  @PrimaryGeneratedColumn({ type: "int", name: "doctor_id" })
+  @PrimaryGeneratedColumn({
+    type: 'int',
+    name: 'doctor_id',
+  })
   doctorId: number;
 
-  @Column("int", { name: "clinic_id", nullable: true })
+  @Column('int', {
+    name: 'clinic_id',
+    nullable: true,
+  })
   clinicId: number | null;
 
-  @Column("int", { name: "major_id", nullable: true })
+  @Column('int', {
+    name: 'major_id',
+    nullable: true,
+  })
   majorId: number | null;
 
-  @Column("text", { name: "summary", nullable: true })
+  @Column('text', {
+    name: 'summary',
+    nullable: true,
+  })
   summary: string | null;
 
-  @Column("datetime", { name: "created_at", nullable: true })
+  @Column('datetime', {
+    name: 'created_at',
+    nullable: true,
+  })
   createdAt: Date | null;
 
-  @Column("datetime", { name: "updated_at", nullable: true })
+  @Column('datetime', {
+    name: 'updated_at',
+    nullable: true,
+  })
   updatedAt: Date | null;
 
-  @Column("varchar", { name: "title", nullable: true, length: 255 })
+  @Column('varchar', {
+    name: 'title',
+    nullable: true,
+    length: 255,
+  })
   title: string | null;
 
-  @Column("int", { name: "views", nullable: true })
+  @Column('int', {
+    name: 'views',
+    nullable: true,
+  })
   views: number | null;
 
-  @Column("text", { name: "introduction", nullable: true })
+  @Column('text', {
+    name: 'introduction',
+    nullable: true,
+  })
   introduction: string | null;
 
-  @Column("int", { name: "user_id", nullable: true })
+  @Column('int', {
+    name: 'user_id',
+    nullable: true,
+  })
   userId: number | null;
 
-  @Column("int", { name: "service_id", nullable: true })
+  @Column('int', {
+    name: 'service_id',
+    nullable: true,
+  })
   serviceId: number | null;
 
-  @Column("double", { name: "average_star", nullable: true, precision: 22 })
+  @Column('double', {
+    name: 'average_star',
+    nullable: true,
+    precision: 22,
+  })
   averageStar: number | null;
 
-  @OneToMany(() => Appointment, (appointment) => appointment.doctor)
+  @OneToMany(
+    () => Appointment,
+    (appointment) => appointment.doctor,
+  )
   appointments: Appointment[];
 
-  @OneToMany(() => Comment, (comment) => comment.doctor)
+  @OneToMany(
+    () => Comment,
+    (comment) => comment.doctor,
+  )
   comments: Comment[];
 
-  @ManyToOne(() => Clinic, (clinic) => clinic.doctors, {
-    onDelete: "CASCADE",
-    onUpdate: "CASCADE",
-  })
-  @JoinColumn([{ name: "clinic_id", referencedColumnName: "id" }])
+  @ManyToOne(
+    () => Clinic,
+    (clinic) => clinic.doctors,
+    {
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
+    },
+  )
+  @JoinColumn([
+    {
+      name: 'clinic_id',
+      referencedColumnName: 'id',
+    },
+  ])
   clinic: Clinic;
 
   @ManyToOne(() => User, (user) => user.doctors, {
-    onDelete: "NO ACTION",
-    onUpdate: "NO ACTION",
+    onDelete: 'NO ACTION',
+    onUpdate: 'NO ACTION',
   })
-  @JoinColumn([{ name: "user_id", referencedColumnName: "userId" }])
+  @JoinColumn([
+    {
+      name: 'user_id',
+      referencedColumnName: 'userId',
+    },
+  ])
   user: User;
 
-  @ManyToOne(() => Major, (major) => major.doctors, {
-    onDelete: "NO ACTION",
-    onUpdate: "NO ACTION",
-  })
-  @JoinColumn([{ name: "major_id", referencedColumnName: "id" }])
+  @ManyToOne(
+    () => Major,
+    (major) => major.doctors,
+    {
+      onDelete: 'NO ACTION',
+      onUpdate: 'NO ACTION',
+    },
+  )
+  @JoinColumn([
+    {
+      name: 'major_id',
+      referencedColumnName: 'id',
+    },
+  ])
   major: Major;
 
-  @OneToMany(() => DoctorSchedule, (doctorSchedule) => doctorSchedule.doctor)
+  @OneToMany(
+    () => DoctorSchedule,
+    (doctorSchedule) => doctorSchedule.doctor,
+  )
   doctorSchedules: DoctorSchedule[];
 
-  @OneToMany(() => Invoices, (invoices) => invoices.doctor)
+  @OneToMany(
+    () => Invoices,
+    (invoices) => invoices.doctor,
+  )
   invoices: Invoices[];
+
+  RecordCount: number;
 }

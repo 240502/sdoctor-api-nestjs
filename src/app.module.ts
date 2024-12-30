@@ -7,6 +7,10 @@ import { MailerModule } from './modules/mailer/mailer.module';
 import { AppointmentModule } from './modules/appointment/appointment.module';
 import { AuthService } from './modules/auth/auth.service';
 import { AuthModule } from './modules/auth/auth.module';
+import { ClinicModule } from './modules/clinic/clinic.module';
+import { CommentModule } from './modules/comment/comment.module';
+import { ServiceModule } from './modules/service/service.module';
+import { PostModule } from './modules/post/post.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -26,6 +30,10 @@ import { AuthModule } from './modules/auth/auth.module';
     MailerModule,
     AppointmentModule,
     AuthModule,
+    ClinicModule,
+    CommentModule,
+    ServiceModule,
+    PostModule,
   ],
   providers: [],
 })

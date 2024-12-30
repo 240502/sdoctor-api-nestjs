@@ -15,11 +15,17 @@ import { Doctor } from 'src/models/Doctor';
 
 @Controller('doctor')
 export class DoctorController {
-  constructor(private doctorService: DoctorService) {}
+  constructor(
+    private doctorService: DoctorService,
+  ) {}
   @Post('/create')
-  async createDoctor(@Body() doctor: Doctor): Promise<any> {
+  async createDoctor(
+    @Body() doctor: Doctor,
+  ): Promise<any> {
     try {
-      await this.doctorService.createDoctor(doctor);
+      await this.doctorService.createDoctor(
+        doctor,
+      );
       return {
         statusCode: HttpStatus.OK,
         message: 'Successfully',
@@ -33,23 +39,34 @@ export class DoctorController {
   }
 
   @Post('/view')
-  async viewDoctor(@Body() data: any): Promise<any> {
+  async viewDoctor(
+    @Body() data: any,
+  ): Promise<any> {
     try {
-      const { pageIndex, pageSize, majorId, name, clinicId } = data;
-      const results: any = await this.doctorService.viewDoctor(
+      const {
         pageIndex,
         pageSize,
         majorId,
         name,
         clinicId,
-      );
+      } = data;
+      const results: Doctor[] =
+        await this.doctorService.viewDoctor(
+          pageIndex,
+          pageSize,
+          majorId,
+          name,
+          clinicId,
+        );
       if (results) {
         return {
           pageIndex: pageIndex,
           pageSize: pageSize,
           data: results,
           totalItems: results[0].RecordCount,
-          pageCount: Math.ceil(results[0].RecordCount / pageSize),
+          pageCount: Math.ceil(
+            results[0].RecordCount / pageSize,
+          ),
           majorId: majorId,
           name: name,
           clinicId: clinicId,
@@ -87,15 +104,23 @@ export class DoctorController {
       );
     } catch (err: any) {
       throw new HttpException(
-        { statusCode: HttpStatus.BAD_REQUEST, message: err.message },
+        {
+          statusCode: HttpStatus.BAD_REQUEST,
+          message: err.message,
+        },
         HttpStatus.BAD_REQUEST,
       );
     }
   }
   @Get('/get-by-id/:id')
-  async getDoctorById(@Param('id') id: number): Promise<any> {
+  async getDoctorById(
+    @Param('id') id: number,
+  ): Promise<any> {
     try {
-      const result = await this.doctorService.getDoctorById(id);
+      const result =
+        await this.doctorService.getDoctorById(
+          id,
+        );
       if (result) {
         return result;
       }
@@ -111,9 +136,14 @@ export class DoctorController {
   }
 
   @Get('get-by-user-id/:userId')
-  async getDoctorByUserId(@Param('userId') userId: number): Promise<any> {
+  async getDoctorByUserId(
+    @Param('userId') userId: number,
+  ): Promise<any> {
     try {
-      const result = await this.doctorService.getDoctorByUserId(userId);
+      const result =
+        await this.doctorService.getDoctorByUserId(
+          userId,
+        );
       console.log(result);
       if (result) {
         return result;
@@ -130,8 +160,12 @@ export class DoctorController {
   }
 
   @Put('/update-doctor-views/:id')
-  async updateDoctorViews(@Param('id') id: number): Promise<void> {
-    await this.doctorService.updateDoctorViews(id);
+  async updateDoctorViews(
+    @Param('id') id: number,
+  ): Promise<void> {
+    await this.doctorService.updateDoctorViews(
+      id,
+    );
     throw new HttpException(
       {
         statusCode: HttpStatus.OK,
@@ -142,7 +176,10 @@ export class DoctorController {
   }
   catch(err: any) {
     throw new HttpException(
-      { statusCode: HttpStatus.BAD_REQUEST, message: err.message },
+      {
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: err.message,
+      },
       HttpStatus.BAD_REQUEST,
     );
   }
@@ -151,10 +188,11 @@ export class DoctorController {
   async getCommonDoctor(@Body() data: any) {
     try {
       const { pageIndex, pageSize } = data;
-      const results = await this.doctorService.getCommonDoctor(
-        pageIndex,
-        pageSize,
-      );
+      const results =
+        await this.doctorService.getCommonDoctor(
+          pageIndex,
+          pageSize,
+        );
       return {
         pageIndex: pageIndex,
         pageSize: pageSize,
@@ -162,7 +200,10 @@ export class DoctorController {
       };
     } catch (err: any) {
       throw new HttpException(
-        { statusCode: HttpStatus.BAD_REQUEST, message: err.message },
+        {
+          statusCode: HttpStatus.BAD_REQUEST,
+          message: err.message,
+        },
         HttpStatus.BAD_GATEWAY,
       );
     }
