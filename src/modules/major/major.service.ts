@@ -7,7 +7,7 @@ export class MajorService {
   async getCommonMajor(): Promise<any> {
     try {
       const sql = 'GetCommonMajor';
-      const [results] = await this.db.callProcedure(sql, []);
+      const results = await this.db.callProcedure(sql, []);
       if (Array.isArray(results) && results.length > 0) {
         return results;
       } else return null;
@@ -18,7 +18,7 @@ export class MajorService {
   async getAllMajor(): Promise<any> {
     try {
       const sql = 'GetAllMajor';
-      const [results] = await this.db.callProcedure(sql, []);
+      const results = await this.db.callProcedure(sql, []);
       if (Array.isArray(results) && results.length > 0) {
         return results;
       } else return null;
@@ -29,7 +29,7 @@ export class MajorService {
   async getMajorById(id: number): Promise<any> {
     try {
       const sql = 'GetMajorById';
-      const [results] = await this.db.callProcedure(sql, [id]);
+      const results = await this.db.callProcedure(sql, [id]);
       if (Array.isArray(results) && results.length > 0) {
         return results[0];
       } else return null;
@@ -40,7 +40,7 @@ export class MajorService {
   async viewMajor(pageIndex: number, pageSize: number): Promise<any> {
     try {
       const sql = 'ViewMajors';
-      const [results] = await this.db.callProcedure(sql, [
+      const results = await this.db.callProcedure(sql, [
         pageIndex,
         pageSize,
       ]);

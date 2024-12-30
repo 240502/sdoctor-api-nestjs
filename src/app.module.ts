@@ -16,6 +16,7 @@ import { DoctorServiceModule } from './modules/doctor-service/doctor-service.mod
 import { HomeMenuModule } from './modules/home-menu/home-menu.module';
 import { InvoiceModule } from './modules/invoice/invoice.module';
 import { MajorModule } from './modules/major/major.module';
+import { PaymentMethodModule } from './modules/payment-method/payment-method.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -44,6 +45,7 @@ import { MajorModule } from './modules/major/major.module';
     HomeMenuModule,
     InvoiceModule,
     MajorModule,
+    PaymentMethodModule,
   ],
   providers: [],
   controllers: [],

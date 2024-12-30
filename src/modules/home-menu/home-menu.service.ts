@@ -7,7 +7,7 @@ export class HomeMenuService {
   async getHomeMenu(): Promise<any> {
     try {
       const sql = 'GetHomeMenu';
-      const [results] = await this.db.callProcedure(sql, []);
+      const results = await this.db.callProcedure(sql, []);
       if (Array.isArray(results) && results.length > 0) {
         return results;
       } else return null;
