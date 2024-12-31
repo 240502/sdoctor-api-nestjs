@@ -19,6 +19,10 @@ import { MajorModule } from './modules/major/major.module';
 import { PaymentMethodModule } from './modules/payment-method/payment-method.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
 import { PatientProfileModule } from './modules/patient-profile/patient-profile.module';
+import { PostCategoryModule } from './modules/post-category/post-category.module';
+import { ServiceCategoryModule } from './modules/service-category/service-category.module';
+import { StatusModule } from './modules/status/status.module';
+import { TimeModule } from './modules/time/time.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -50,6 +54,10 @@ import { PatientProfileModule } from './modules/patient-profile/patient-profile.
     PaymentMethodModule,
     NotificationsModule,
     PatientProfileModule,
+    PostCategoryModule,
+    ServiceCategoryModule,
+    StatusModule,
+    TimeModule,
   ],
   providers: [],
   controllers: [],
