@@ -17,6 +17,8 @@ import { HomeMenuModule } from './modules/home-menu/home-menu.module';
 import { InvoiceModule } from './modules/invoice/invoice.module';
 import { MajorModule } from './modules/major/major.module';
 import { PaymentMethodModule } from './modules/payment-method/payment-method.module';
+import { NotificationsModule } from './modules/notifications/notifications.module';
+import { PatientProfileModule } from './modules/patient-profile/patient-profile.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -46,6 +48,8 @@ import { PaymentMethodModule } from './modules/payment-method/payment-method.mod
     InvoiceModule,
     MajorModule,
     PaymentMethodModule,
+    NotificationsModule,
+    PatientProfileModule,
   ],
   providers: [],
   controllers: [],
