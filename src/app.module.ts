@@ -21,7 +21,6 @@ import { NotificationsModule } from './modules/notifications/notifications.modul
 import { PatientProfileModule } from './modules/patient-profile/patient-profile.module';
 import { PostCategoryModule } from './modules/post-category/post-category.module';
 import { ServiceCategoryModule } from './modules/service-category/service-category.module';
-import { StatusModule } from './modules/status/status.module';
 import { TimeModule } from './modules/time/time.module';
 @Module({
   imports: [
@@ -56,7 +55,6 @@ import { TimeModule } from './modules/time/time.module';
     PatientProfileModule,
     PostCategoryModule,
     ServiceCategoryModule,
-    StatusModule,
     TimeModule,
   ],
   providers: [],

@@ -10,18 +10,24 @@ import {
 } from '@nestjs/common';
 import { AppointmentService } from './appointment.service';
 import { Appointment } from 'src/models/Appointment';
+import { AppointmentGateway } from './gateway/appointment.gateway';
 
 @Controller('/appointment')
 export class AppointmentController {
-  constructor(private appointmentService: AppointmentService) {}
+  constructor(
+    private appointmentService: AppointmentService,
+    private readonly appointmentGateway: AppointmentGateway,
+  ) {}
 
   @Post('/create')
-  async createAppointment(@Body() appointment: Appointment): Promise<any> {
+  async createAppointment(
+    @Body() appointment: Appointment,
+  ): Promise<any> {
     try {
       const result =
         await this.appointmentService.createAppointment(appointment);
-      console.log(appointment);
       if (result) {
+        this.appointmentGateway.notifyToAllClient(appointment);
         return result;
       }
     } catch (err: any) {
@@ -73,7 +79,8 @@ export class AppointmentController {
   @Get('/get-by-id/:id')
   async getAppointmentById(@Param('id') id: number): Promise<any> {
     try {
-      const result = await this.appointmentService.getAppointmentById(id);
+      const result =
+        await this.appointmentService.getAppointmentById(id);
       if (result) {
         return result;
       } else {
@@ -98,13 +105,19 @@ export class AppointmentController {
     },
   ): Promise<any> {
     try {
-      const { patientName, doctorName, patientPhone, appointmentDate } = body;
-      const result = await this.appointmentService.getAppointmentAtInvoice(
+      const {
         patientName,
         doctorName,
         patientPhone,
         appointmentDate,
-      );
+      } = body;
+      const result =
+        await this.appointmentService.getAppointmentAtInvoice(
+          patientName,
+          doctorName,
+          patientPhone,
+          appointmentDate,
+        );
       if (result) {
         return result;
       }
@@ -135,7 +148,9 @@ export class AppointmentController {
   }
 
   @Get('/get-appointment-in-day/:doctorId')
-  async getAppointmentInDay(@Param('doctorId') doctorId: number): Promise<any> {
+  async getAppointmentInDay(
+    @Param('doctorId') doctorId: number,
+  ): Promise<any> {
     try {
       const results =
         await this.appointmentService.getAppointmentInDay(doctorId);

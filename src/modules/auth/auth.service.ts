@@ -1,9 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import {
-  AuthModel,
-  Functions,
-  User,
-} from 'src/models';
+import { AuthModel, Functions, User } from 'src/models';
 import * as argon from 'argon2';
 import { DatabaseHelper } from 'src/common/database/helper';
 import { JwtService } from '@nestjs/jwt';
@@ -26,11 +22,10 @@ export class AuthService {
   async signIn(auth: AuthModel): Promise<any> {
     try {
       const procedureName = 'Login';
-      const results =
-        await this.databaseHelper.callProcedure(
-          procedureName,
-          [auth.email],
-        );
+      const results = await this.databaseHelper.callProcedure(
+        procedureName,
+        [auth.email],
+      );
 
       if (results.length === 0) {
         throw new Error('Email không tồn tại!');
@@ -44,14 +39,12 @@ export class AuthService {
           userId: results[0].user_id,
           email: results[0].email,
         };
-        const token =
-          await this.generateToken(payload);
+        const token = await this.generateToken(payload);
         let functions: Functions[] = [];
         for (let i = 0; i < results.length; i++) {
           let model: Functions = {
             id: Number(results[i].function_id),
-            functionName:
-              results[i].function_name,
+            functionName: results[i].function_name,
             createdAt: null,
             updatedAt: null,
             parentId: null,
@@ -86,9 +79,7 @@ export class AuthService {
         };
         return user;
       } else {
-        throw new Error(
-          'Mật khẩu không chính xác!',
-        );
+        throw new Error('Mật khẩu không chính xác!');
       }
     } catch (err: any) {
       throw new Error(err.message);
@@ -96,14 +87,12 @@ export class AuthService {
   }
   async signUp(auth: AuthModel): Promise<any> {
     try {
-      const hash = await argon.hash(
-        auth.password,
-      );
+      const hash = await argon.hash(auth.password);
       const procedureName = 'CreateAccount';
-      await this.databaseHelper.callProcedure(
-        procedureName,
-        [auth.userId, hash],
-      );
+      await this.databaseHelper.callProcedure(procedureName, [
+        auth.userId,
+        hash,
+      ]);
     } catch (err: any) {
       throw new Error(err.message);
     }
