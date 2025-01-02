@@ -22,8 +22,13 @@ import { PatientProfileModule } from './modules/patient-profile/patient-profile.
 import { PostCategoryModule } from './modules/post-category/post-category.module';
 import { ServiceCategoryModule } from './modules/service-category/service-category.module';
 import { TimeModule } from './modules/time/time.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'public'),
+    }),
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: '127.0.0.1',
