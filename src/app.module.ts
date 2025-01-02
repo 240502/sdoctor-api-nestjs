@@ -27,7 +27,7 @@ import { join } from 'path';
 @Module({
   imports: [
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'public'),
+      rootPath: join(__dirname, '..', 'public'), // Trỏ đến thư mục public ở ngoài src
     }),
     TypeOrmModule.forRoot({
       type: 'mysql',
