@@ -14,18 +14,11 @@ import { Service } from 'src/models';
 
 @Controller('service')
 export class ServiceController {
-  constructor(
-    private serviceService: ServiceService,
-  ) {}
+  constructor(private serviceService: ServiceService) {}
   @Post('create')
-  async createService(
-    @Body() service: Service,
-  ): Promise<any> {
+  async createService(@Body() service: Service): Promise<any> {
     try {
-      const result =
-        await this.serviceService.createService(
-          service,
-        );
+      const result = await this.serviceService.createService(service);
       if (result)
         return {
           message: 'Created successfully',
@@ -43,14 +36,9 @@ export class ServiceController {
   }
 
   @Put('update')
-  async updateService(
-    @Body() service: Service,
-  ): Promise<any> {
+  async updateService(@Body() service: Service): Promise<any> {
     try {
-      const result =
-        await this.serviceService.updateService(
-          service,
-        );
+      const result = await this.serviceService.updateService(service);
       if (result)
         return {
           message: 'Updated successfully',
@@ -68,9 +56,7 @@ export class ServiceController {
   }
 
   @Delete('delete/:id')
-  async deleteService(
-    @Param('id') id: number,
-  ): Promise<any> {
+  async deleteService(@Param('id') id: number): Promise<any> {
     try {
       await this.serviceService.deleteService(id);
       return {
@@ -83,13 +69,9 @@ export class ServiceController {
   }
 
   @Put('update-views/:id')
-  async updateServiceViews(
-    @Param('id') id: number,
-  ): Promise<any> {
+  async updateServiceViews(@Param('id') id: number): Promise<any> {
     try {
-      await this.serviceService.updateServiceViews(
-        id,
-      );
+      await this.serviceService.updateServiceViews(id);
       return {
         message: 'Updated successfully',
         result: true,
@@ -100,18 +82,10 @@ export class ServiceController {
   }
 
   @Get('get-by-id/:id')
-  async getServiceById(
-    @Param('id') id: number,
-  ): Promise<any> {
+  async getServiceById(@Param('id') id: number): Promise<any> {
     try {
-      const result =
-        await this.serviceService.getServiceById(
-          id,
-        );
-      if (result)
-        return {
-          result,
-        };
+      const result = await this.serviceService.getServiceById(id);
+      if (result) return result;
       else {
         throw new HttpException(
           {
@@ -149,24 +123,19 @@ export class ServiceController {
         endPrice,
         name,
       } = body;
-      const results =
-        await this.serviceService.viewService(
-          pageIndex,
-          pageSize,
-          clinicId,
-          categoryId,
-          startPrice,
-          endPrice,
-          name,
-        );
-      if (
-        Array.isArray(results) &&
-        results.length > 0
-      ) {
+      const results = await this.serviceService.viewService(
+        pageIndex,
+        pageSize,
+        clinicId,
+        categoryId,
+        startPrice,
+        endPrice,
+        name,
+      );
+      if (Array.isArray(results) && results.length > 0) {
         return {
           pageIndex: pageIndex,
-          pageCount:
-            results[0].RecordCount / pageSize,
+          pageCount: results[0].RecordCount / pageSize,
           pageSize: pageSize,
           data: results,
           name: name,
@@ -187,12 +156,8 @@ export class ServiceController {
   @Get('get-common')
   async getCommonService(): Promise<any> {
     try {
-      const results =
-        await this.serviceService.getCommonService();
-      if (
-        results.length > 0 &&
-        Array.isArray(results)
-      ) {
+      const results = await this.serviceService.getCommonService();
+      if (results.length > 0 && Array.isArray(results)) {
         return results;
       } else
         throw new HttpException(

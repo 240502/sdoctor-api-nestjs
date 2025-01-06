@@ -5,7 +5,10 @@ import { DataSource } from 'typeorm';
 export class DatabaseHelper {
   constructor(private readonly dataSource: DataSource) {}
 
-  async callProcedure(procedureName: string, inputParams: any[]): Promise<any> {
+  async callProcedure(
+    procedureName: string,
+    inputParams: any[],
+  ): Promise<any> {
     const queryRunner = this.dataSource.createQueryRunner();
 
     try {

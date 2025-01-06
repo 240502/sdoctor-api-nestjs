@@ -8,24 +8,38 @@ import {
   Param,
   Post,
   Put,
-  Query,
 } from '@nestjs/common';
 import { DoctorService } from './doctor.service';
 import { Doctor } from 'src/models/Doctor';
+import {
+  DoctorCreateDto,
+  DoctorResponseDto,
+  DoctorUpdateDto,
+} from './dto';
 
 @Controller('doctor')
 export class DoctorController {
-  constructor(
-    private doctorService: DoctorService,
-  ) {}
+  constructor(private doctorService: DoctorService) {}
   @Post('/create')
-  async createDoctor(
-    @Body() doctor: Doctor,
-  ): Promise<any> {
+  async createDoctor(@Body() doctor: DoctorCreateDto): Promise<any> {
     try {
-      await this.doctorService.createDoctor(
-        doctor,
-      );
+      await this.doctorService.createDoctor(doctor);
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Successfully',
+      };
+    } catch (err: any) {
+      return {
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: err.message,
+      };
+    }
+  }
+
+  @Put('/update')
+  async updateDoctor(@Body() doctor: DoctorUpdateDto): Promise<any> {
+    try {
+      await this.doctorService.updateDoctor(doctor);
       return {
         statusCode: HttpStatus.OK,
         message: 'Successfully',
@@ -39,18 +53,10 @@ export class DoctorController {
   }
 
   @Post('/view')
-  async viewDoctor(
-    @Body() data: any,
-  ): Promise<any> {
+  async viewDoctor(@Body() data: any): Promise<any> {
     try {
-      const {
-        pageIndex,
-        pageSize,
-        majorId,
-        name,
-        clinicId,
-      } = data;
-      const results: Doctor[] =
+      const { pageIndex, pageSize, majorId, name, clinicId } = data;
+      const results: DoctorResponseDto[] =
         await this.doctorService.viewDoctor(
           pageIndex,
           pageSize,
@@ -63,10 +69,8 @@ export class DoctorController {
           pageIndex: pageIndex,
           pageSize: pageSize,
           data: results,
-          totalItems: results[0].RecordCount,
-          pageCount: Math.ceil(
-            results[0].RecordCount / pageSize,
-          ),
+          totalItems: results[0].recordCount,
+          pageCount: Math.ceil(results[0].recordCount / pageSize),
           majorId: majorId,
           name: name,
           clinicId: clinicId,
@@ -98,7 +102,7 @@ export class DoctorController {
       throw new HttpException(
         {
           statusCode: HttpStatus.OK,
-          message: 'Xóa thành công!',
+          message: 'Deleted successfully!',
         },
         HttpStatus.OK,
       );
@@ -113,14 +117,10 @@ export class DoctorController {
     }
   }
   @Get('/get-by-id/:id')
-  async getDoctorById(
-    @Param('id') id: number,
-  ): Promise<any> {
+  async getDoctorById(@Param('id') id: number): Promise<any> {
     try {
-      const result =
-        await this.doctorService.getDoctorById(
-          id,
-        );
+      const result: DoctorResponseDto =
+        await this.doctorService.getDoctorById(id);
       if (result) {
         return result;
       }
@@ -141,9 +141,7 @@ export class DoctorController {
   ): Promise<any> {
     try {
       const result =
-        await this.doctorService.getDoctorByUserId(
-          userId,
-        );
+        await this.doctorService.getDoctorByUserId(userId);
       console.log(result);
       if (result) {
         return result;
@@ -160,12 +158,8 @@ export class DoctorController {
   }
 
   @Put('/update-doctor-views/:id')
-  async updateDoctorViews(
-    @Param('id') id: number,
-  ): Promise<void> {
-    await this.doctorService.updateDoctorViews(
-      id,
-    );
+  async updateDoctorViews(@Param('id') id: number): Promise<void> {
+    await this.doctorService.updateDoctorViews(id);
     throw new HttpException(
       {
         statusCode: HttpStatus.OK,
@@ -188,11 +182,10 @@ export class DoctorController {
   async getCommonDoctor(@Body() data: any) {
     try {
       const { pageIndex, pageSize } = data;
-      const results =
-        await this.doctorService.getCommonDoctor(
-          pageIndex,
-          pageSize,
-        );
+      const results = await this.doctorService.getCommonDoctor(
+        pageIndex,
+        pageSize,
+      );
       return {
         pageIndex: pageIndex,
         pageSize: pageSize,
