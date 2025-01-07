@@ -192,19 +192,11 @@ export class PostController {
   }
 
   @Get('get-by-id/:id')
-  async getPostById(id: number): Promise<any> {
+  async getPostById(@Param('id') id: number): Promise<any> {
     try {
       const result = await this.postService.getPostById(id);
       if (result) {
         return result;
-      } else {
-        throw new HttpException(
-          {
-            statusCode: HttpStatus.NOT_FOUND,
-            message: 'Không tồn tại bản ghi nào!',
-          },
-          HttpStatus.NOT_FOUND,
-        );
       }
     } catch (err: any) {
       throw new HttpException(
