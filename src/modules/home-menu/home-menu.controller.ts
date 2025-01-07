@@ -5,7 +5,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { HomeMenuService } from './home-menu.service';
-import { HomeMenu } from 'src/models';
+import { HomeMenuResDto } from './dto';
 
 @Controller('home-menu')
 export class HomeMenuController {
@@ -14,10 +14,10 @@ export class HomeMenuController {
   @Get('get-all')
   async getHomeMenu(): Promise<any> {
     try {
-      const result: HomeMenu[] =
+      const results: HomeMenuResDto[] =
         await this.homeMenuService.getHomeMenu();
-      if (result.length > 0 && Array.isArray(result)) {
-        return result;
+      if (results) {
+        return results;
       } else
         throw new HttpException(
           {

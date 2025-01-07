@@ -4,19 +4,17 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { DoctorServiceService } from './doctor-service.service';
+import { DoctorServiceResDto } from './dto';
 
 @Controller('doctor-service')
 export class DoctorServiceController {
   constructor(private doctorServiceService: DoctorServiceService) {}
-  async getAllDoctorServices(
-    req: Request,
-    res: Response,
-  ): Promise<void> {
+  async getAllDoctorServices(): Promise<any> {
     try {
-      const result =
+      const results: DoctorServiceResDto[] =
         await this.doctorServiceService.getAllDoctorService();
-      if (result) {
-        return result;
+      if (results) {
+        return results;
       } else {
         throw new HttpException(
           {
