@@ -1,11 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
-import {
-  AuthModel,
-  Functions,
-  User,
-} from 'src/models';
+import { AuthModel, Functions, User } from 'src/models';
 import { DatabaseHelper } from 'src/common/database/helper';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
@@ -20,5 +16,6 @@ import { JwtModule } from '@nestjs/jwt';
   ],
   providers: [AuthService, DatabaseHelper],
   controllers: [AuthController],
+  exports: [JwtModule],
 })
 export class AuthModule {}

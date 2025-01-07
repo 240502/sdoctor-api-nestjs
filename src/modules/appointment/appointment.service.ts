@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { DatabaseHelper } from 'src/common/database/helper';
 import {
   AppointmentCreateDto,
@@ -16,7 +16,7 @@ export class AppointmentService {
   ): Promise<AppointmentResponseDto | null> {
     try {
       const procedureName = 'OrderAppointment';
-      const results = await this.db.callProcedure(procedureName, [
+      const data = await this.db.callProcedure(procedureName, [
         appointment.doctorId,
         appointment.appointmentDate,
         appointment.patientName,
@@ -36,10 +36,11 @@ export class AppointmentService {
         appointment.serviceId,
         appointment.serviceName,
       ]);
-      if (Array.isArray(results) && results.length > 0) {
+
+      if (Array.isArray(data) && data.length > 0) {
         const appointment = plainToInstance(
           AppointmentResponseDto,
-          results[0],
+          data[0],
         );
         return appointment;
       } else return null;

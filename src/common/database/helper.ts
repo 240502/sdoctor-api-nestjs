@@ -1,4 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import {
+  HttpCode,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
+import { HttpErrorByCode } from '@nestjs/common/utils/http-error-by-code.util';
 import { DataSource } from 'typeorm';
 
 @Injectable()
@@ -26,7 +32,11 @@ export class DatabaseHelper {
       if (err_code === '0') {
         return results[0];
       } else {
-        throw new Error(err_msg);
+        if (err_code === '-1') {
+          throw new NotFoundException(err_msg);
+        } else {
+          throw new Error(err_msg);
+        }
       }
     } catch (err: any) {
       throw new Error(err.message);

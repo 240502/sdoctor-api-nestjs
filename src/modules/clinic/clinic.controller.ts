@@ -8,6 +8,8 @@ import {
   Param,
   Post,
   Put,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
 import { ClinicService } from './clinic.service';
 import {
@@ -16,12 +18,14 @@ import {
   ClinicResponseDto,
 } from './dto';
 import { ClinicFilterDto } from './dto/clinic-filter.dto';
+import { AuthGuard } from 'src/common/guards';
 
 @Controller('clinic')
 export class ClinicController {
   constructor(private clinicService: ClinicService) {}
 
   @Post('create')
+  @UseGuards(AuthGuard)
   async createClinic(@Body() clinic: ClinicCreateDto) {
     try {
       const result: ClinicResponseDto =
@@ -60,6 +64,7 @@ export class ClinicController {
   }
 
   @Put('update')
+  @UseGuards(AuthGuard)
   async updateClinic(@Body() clinic: ClinicUpdateDto) {
     try {
       await this.clinicService.updateClinic(clinic);
@@ -77,6 +82,7 @@ export class ClinicController {
     }
   }
   @Delete('delete/:id')
+  @UseGuards(AuthGuard)
   async deleteClinic(id: number) {
     try {
       await this.clinicService.deleteClinic(id);
@@ -95,10 +101,7 @@ export class ClinicController {
   }
 
   @Post('view')
-  async viewClinic(
-    @Body()
-    body: ClinicFilterDto,
-  ) {
+  async viewClinic(@Body() body: ClinicFilterDto) {
     try {
       const results: ClinicResponseDto[] =
         await this.clinicService.viewClinic(body);
@@ -106,10 +109,12 @@ export class ClinicController {
         return {
           pageIndex: body.pageIndex,
           pageSize: body.pageSize,
-          pageCount: results[0].recordCount / body.pageSize,
           data: results,
           location: body.location,
           name: body.name,
+          pageCount: Math.ceil(
+            results[0].recordCount / body.pageSize,
+          ),
         };
       } else {
         throw new HttpException(

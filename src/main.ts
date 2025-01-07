@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
-
+import * as bodyParser from 'body-parser';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   // Bật CORS
@@ -10,8 +10,14 @@ async function bootstrap() {
     methods: 'GET,POST,PUT,DELETE,OPTIONS', // Các phương thức được phép
     allowedHeaders: 'Content-Type, Authorization', // Các header được phép
   });
-
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
+  app.use(bodyParser.json());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true, // Đảm bảo tự động chuyển đổi các giá trị từ chuỗi sang số
+      whitelist: true, // Chỉ cho phép các thuộc tính đã định nghĩa trong DTO
+      forbidNonWhitelisted: true, // Nếu có thuộc tính không hợp lệ, sẽ báo lỗi
+    }),
+  ); // Nếu có thuộc tính không hợp lệ, sẽ báo lỗi));
   await app.listen(process.env.PORT ?? 9999);
 }
 bootstrap();

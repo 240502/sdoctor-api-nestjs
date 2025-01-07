@@ -34,7 +34,7 @@ export class DoctorService {
     }
   }
 
-  async viewDoctor(
+  async viewDoctorForClient(
     pageIndex: number,
     pageSize: number,
     majorId: number,
@@ -42,7 +42,38 @@ export class DoctorService {
     clinicId: number,
   ): Promise<DoctorResponseDto[] | null> {
     try {
-      const procedureName = 'GetDoctorView';
+      const procedureName = 'ViewDoctorForClient';
+      const results: DoctorResponseDto[] =
+        await this.db.callProcedure(procedureName, [
+          pageIndex,
+          pageSize,
+          majorId,
+          name,
+          clinicId,
+        ]);
+      if (Array.isArray(results) && results.length > 0) {
+        const doctors: DoctorResponseDto[] = plainToInstance(
+          DoctorResponseDto,
+          results,
+        );
+        return doctors;
+      } else {
+        return null;
+      }
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  }
+
+  async viewDoctorForAdmin(
+    pageIndex: number,
+    pageSize: number,
+    majorId: number,
+    name: string,
+    clinicId: number,
+  ): Promise<DoctorResponseDto[] | null> {
+    try {
+      const procedureName = 'ViewDoctorForAdmin';
       const results: DoctorResponseDto[] =
         await this.db.callProcedure(procedureName, [
           pageIndex,
@@ -83,8 +114,6 @@ export class DoctorService {
       if (Array.isArray(results) && results.length > 0) {
         const doctor = plainToInstance(DoctorResponseDto, results[0]);
         return doctor;
-      } else {
-        return null;
       }
     } catch (err: any) {
       throw new Error(err.message);

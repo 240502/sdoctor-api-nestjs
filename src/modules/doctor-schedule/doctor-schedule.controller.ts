@@ -7,6 +7,7 @@ import {
   Body,
   HttpException,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import { DoctorScheduleService } from './doctor-schedule.service';
 import {
@@ -14,11 +15,13 @@ import {
   DoctorScheduleResponseDto,
   DoctorScheduleUpdateDto,
 } from './dto';
+import { AuthGuard } from 'src/common/guards';
 @Controller('doctor-schedule')
 export class DoctorScheduleController {
   constructor(private doctorScheduleService: DoctorScheduleService) {}
 
   @Post('create')
+  @UseGuards(AuthGuard)
   async createSchedule(
     @Body() doctorSchedule: DoctorScheduleCreateDto,
   ): Promise<any> {
@@ -29,11 +32,6 @@ export class DoctorScheduleController {
         );
       if (result) {
         return result;
-      } else {
-        throw new HttpException(
-          { statusCode: HttpStatus.NOT_FOUND, message: 'Not found!' },
-          HttpStatus.NOT_FOUND,
-        );
       }
     } catch (err: any) {
       throw new HttpException(
@@ -44,6 +42,7 @@ export class DoctorScheduleController {
   }
 
   @Put('update')
+  @UseGuards(AuthGuard)
   async updateSchedule(
     @Body() body: DoctorScheduleUpdateDto,
   ): Promise<any> {
@@ -59,6 +58,7 @@ export class DoctorScheduleController {
   }
 
   @Delete('delete/:id')
+  @UseGuards(AuthGuard)
   async deleteSchedule(@Param('id') id: number): Promise<any> {
     try {
       await this.deleteSchedule(id);
@@ -85,14 +85,7 @@ export class DoctorScheduleController {
       );
       if (result) {
         return result;
-      } else
-        throw new HttpException(
-          {
-            message: 'Không tồn tại bản ghi nào!',
-            statusCode: HttpStatus.NOT_FOUND,
-          },
-          HttpStatus.NOT_FOUND,
-        );
+      }
     } catch (err: any) {
       throw new HttpException(
         { message: err.message, statusCode: HttpStatus.BAD_REQUEST },

@@ -8,18 +8,26 @@ import {
   HttpException,
   HttpStatus,
   Get,
+  UseGuards,
 } from '@nestjs/common';
 import { PostService } from './post.service';
-import { Post } from 'src/models';
-
+import {
+  PostCreateDto,
+  PostFilterDto,
+  PostResDto,
+  PostUpdateDto,
+} from './dto';
+import { AuthModule } from '../auth/auth.module';
 @Controller('post')
 export class PostController {
   constructor(private postService: PostService) {}
 
   @PostMethod('create')
-  async createPost(@Body() post: Post): Promise<any> {
+  @UseGuards(AuthModule)
+  async createPost(@Body() post: PostCreateDto): Promise<any> {
     try {
-      const result = await this.postService.createPost(post);
+      const result: PostResDto =
+        await this.postService.createPost(post);
       if (result) {
         return {
           message: 'Created successfully',
@@ -38,9 +46,11 @@ export class PostController {
   }
 
   @Put('update')
-  async updatePost(@Body() post: Post): Promise<any> {
+  @UseGuards(AuthModule)
+  async updatePost(@Body() post: PostUpdateDto): Promise<any> {
     try {
-      const result = await this.postService.updatePost(post);
+      const result: PostResDto =
+        await this.postService.updatePost(post);
       if (result) {
         return {
           message: 'Updated successfully',
@@ -59,6 +69,7 @@ export class PostController {
   }
 
   @Delete('delete/:id')
+  @UseGuards(AuthModule)
   async deletePost(@Param('id') id: number): Promise<any> {
     try {
       await this.postService.deletePost(id);
@@ -71,6 +82,7 @@ export class PostController {
   }
 
   @Put('confirm/:id')
+  @UseGuards(AuthModule)
   async confirmPost(@Param('id') id: number): Promise<any> {
     try {
       await this.postService.confirmPost(id);
@@ -91,51 +103,21 @@ export class PostController {
   @PostMethod('view')
   async viewPost(
     @Body()
-    body: {
-      searchContent: string;
-      categoryId: number;
-      pageIndex: number;
-      pageSize: number;
-      status: string;
-      authorId: number;
-    },
+    body: PostFilterDto,
   ): Promise<any> {
     try {
-      const {
-        searchContent,
-        categoryId,
-        pageIndex,
-        pageSize,
-        status,
-        authorId,
-      } = body;
-      const results = await this.postService.viewPost(
-        searchContent,
-        categoryId,
-        pageIndex,
-        pageSize,
-        status,
-        authorId,
-      );
+      const results = await this.postService.viewPost(body);
       if (results) {
         return {
-          pageIndex: pageIndex,
-          pageSize: pageSize,
+          pageIndex: body.pageIndex,
+          pageSize: body.pageSize,
           data: results,
-          pageCount: results[0].RecordCount / pageSize,
-          totalItems: results[0].RecordCount,
-          status: status,
-          authorId: authorId,
-          searchContent: searchContent,
+          pageCount: results[0].recordCount / body.pageSize,
+          totalItems: results[0].recordCount,
+          status: body.status,
+          authorId: body.authorId,
+          searchContent: body.searchContent,
         };
-      } else {
-        throw new HttpException(
-          {
-            statusCode: HttpStatus.NOT_FOUND,
-            message: 'Không tồn tại bản ghi nào!',
-          },
-          HttpStatus.NOT_FOUND,
-        );
       }
     } catch (err: any) {
       throw new HttpException(
@@ -151,7 +133,8 @@ export class PostController {
   @Get('get-common')
   async getCommonPost(): Promise<any> {
     try {
-      const results = await this.postService.getCommonPost();
+      const results: PostResDto[] =
+        await this.postService.getCommonPost();
       if (results) {
         return results;
       } else
@@ -173,7 +156,8 @@ export class PostController {
   @Get('get-new-posts')
   async getNewPosts(): Promise<any> {
     try {
-      const results = await this.postService.getNewPosts();
+      const results: PostResDto[] =
+        await this.postService.getNewPosts();
       if (results) {
         return results;
       } else
@@ -252,7 +236,7 @@ export class PostController {
         return {
           pageIndex: pageIndex,
           pageSize: pageSize,
-          totalItems: results[0].RecordCount,
+          totalItems: results[0].recordCount,
           data: results,
           categoryId: categoryId,
           id: id,

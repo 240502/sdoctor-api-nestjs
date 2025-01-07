@@ -69,15 +69,18 @@ export class ClinicService {
   ): Promise<ClinicResponseDto[] | null> {
     try {
       const procedureName = 'GetClinicView';
-      const results: ClinicResponseDto[] =
-        await this.db.callProcedure(procedureName, [
-          body.pageIndex,
-          body.pageSize,
-          body.location,
-          body.name,
-        ]);
+      const results = await this.db.callProcedure(procedureName, [
+        body.pageIndex,
+        body.pageSize,
+        body.location,
+        body.name,
+      ]);
+
       if (Array.isArray(results) && results.length > 0) {
-        const clinics = plainToInstance(ClinicResponseDto, results);
+        const clinics: ClinicResponseDto[] = plainToInstance(
+          ClinicResponseDto,
+          results,
+        );
         return clinics;
       } else {
         return null;

@@ -8,19 +8,20 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { DoctorService } from './doctor.service';
-import { Doctor } from 'src/models/Doctor';
 import {
   DoctorCreateDto,
   DoctorResponseDto,
   DoctorUpdateDto,
 } from './dto';
-
+import { AuthGuard } from 'src/common/guards';
 @Controller('doctor')
 export class DoctorController {
   constructor(private doctorService: DoctorService) {}
   @Post('/create')
+  @UseGuards(AuthGuard)
   async createDoctor(@Body() doctor: DoctorCreateDto): Promise<any> {
     try {
       await this.doctorService.createDoctor(doctor);
@@ -37,6 +38,7 @@ export class DoctorController {
   }
 
   @Put('/update')
+  @UseGuards(AuthGuard)
   async updateDoctor(@Body() doctor: DoctorUpdateDto): Promise<any> {
     try {
       await this.doctorService.updateDoctor(doctor);
@@ -52,12 +54,12 @@ export class DoctorController {
     }
   }
 
-  @Post('/view')
-  async viewDoctor(@Body() data: any): Promise<any> {
+  @Post('/view-for-client')
+  async viewDoctorForClient(@Body() data: any): Promise<any> {
     try {
       const { pageIndex, pageSize, majorId, name, clinicId } = data;
       const results: DoctorResponseDto[] =
-        await this.doctorService.viewDoctor(
+        await this.doctorService.viewDoctorForClient(
           pageIndex,
           pageSize,
           majorId,
@@ -95,7 +97,50 @@ export class DoctorController {
     }
   }
 
+  @Post('/view-for-admin')
+  async viewDoctorForAdmin(@Body() data: any): Promise<any> {
+    try {
+      const { pageIndex, pageSize, majorId, name, clinicId } = data;
+      const results: DoctorResponseDto[] =
+        await this.doctorService.viewDoctorForAdmin(
+          pageIndex,
+          pageSize,
+          majorId,
+          name,
+          clinicId,
+        );
+      if (results) {
+        return {
+          pageIndex: pageIndex,
+          pageSize: pageSize,
+          data: results,
+          totalItems: results[0].recordCount,
+          pageCount: Math.ceil(results[0].recordCount / pageSize),
+          majorId: majorId,
+          name: name,
+          clinicId: clinicId,
+        };
+      } else {
+        throw new HttpException(
+          {
+            statusCode: HttpStatus.NOT_FOUND,
+            message: 'Không tồn tại bản ghi nào!',
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      }
+    } catch (err: any) {
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.BAD_REQUEST,
+          message: err.message,
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
   @Delete('/delete/:id')
+  @UseGuards(AuthGuard)
   async deleteDoctor(@Param('id') id: number) {
     try {
       await this.doctorService.deleteDoctor(id);
@@ -136,6 +181,7 @@ export class DoctorController {
   }
 
   @Get('get-by-user-id/:userId')
+  @UseGuards(AuthGuard)
   async getDoctorByUserId(
     @Param('userId') userId: number,
   ): Promise<any> {
@@ -158,15 +204,12 @@ export class DoctorController {
   }
 
   @Put('/update-doctor-views/:id')
-  async updateDoctorViews(@Param('id') id: number): Promise<void> {
+  async updateDoctorViews(@Param('id') id: number): Promise<any> {
     await this.doctorService.updateDoctorViews(id);
-    throw new HttpException(
-      {
-        statusCode: HttpStatus.OK,
-        message: 'Success',
-      },
-      HttpStatus.OK,
-    );
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'Success',
+    };
   }
   catch(err: any) {
     throw new HttpException(

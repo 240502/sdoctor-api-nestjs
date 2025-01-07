@@ -4,9 +4,10 @@ import { ClinicController } from './clinic.controller';
 import { DatabaseHelper } from 'src/common/database/helper';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Clinic } from 'src/models';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Clinic])],
+  imports: [TypeOrmModule.forFeature([Clinic]), AuthModule],
   providers: [ClinicService, DatabaseHelper],
   controllers: [ClinicController],
 })

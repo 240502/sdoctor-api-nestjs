@@ -41,10 +41,12 @@ export class CommentService {
       ]);
       if (Array.isArray(results) && results.length > 0) {
         return plainToInstance(CommentReposeDto, results);
-      } else {
-        return null;
       }
     } catch (err: any) {
+      console.log(err);
+      if (err.err_code) {
+        // Ném lại lỗi từ helper
+      }
       throw new Error(err.message);
     }
   }

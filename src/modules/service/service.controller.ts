@@ -8,17 +8,28 @@ import {
   Param,
   Delete,
   Get,
+  UseGuards,
 } from '@nestjs/common';
 import { ServiceService } from './service.service';
-import { Service } from 'src/models';
+import {
+  ServiceCreateDto,
+  ServiceFilterDto,
+  ServiceResDto,
+  ServiceUpdateDto,
+} from './dto';
+import { AuthModule } from '../auth/auth.module';
 
 @Controller('service')
 export class ServiceController {
   constructor(private serviceService: ServiceService) {}
   @Post('create')
-  async createService(@Body() service: Service): Promise<any> {
+  @UseGuards(AuthModule)
+  async createService(
+    @Body() service: ServiceCreateDto,
+  ): Promise<any> {
     try {
-      const result = await this.serviceService.createService(service);
+      const result: ServiceResDto =
+        await this.serviceService.createService(service);
       if (result)
         return {
           message: 'Created successfully',
@@ -36,7 +47,10 @@ export class ServiceController {
   }
 
   @Put('update')
-  async updateService(@Body() service: Service): Promise<any> {
+  @UseGuards(AuthModule)
+  async updateService(
+    @Body() service: ServiceUpdateDto,
+  ): Promise<any> {
     try {
       const result = await this.serviceService.updateService(service);
       if (result)
@@ -56,6 +70,7 @@ export class ServiceController {
   }
 
   @Delete('delete/:id')
+  @UseGuards(AuthModule)
   async deleteService(@Param('id') id: number): Promise<any> {
     try {
       await this.serviceService.deleteService(id);
@@ -103,48 +118,29 @@ export class ServiceController {
   @Post('view')
   async viewService(
     @Body()
-    body: {
-      pageIndex: number;
-      pageSize: number;
-      clinicId: number;
-      categoryId: number;
-      startPrice: number;
-      endPrice: number;
-      name: string;
-    },
+    body: ServiceFilterDto,
   ): Promise<any> {
     try {
-      const {
-        pageIndex,
-        pageSize,
-        clinicId,
-        categoryId,
-        startPrice,
-        endPrice,
-        name,
-      } = body;
-      const results = await this.serviceService.viewService(
-        pageIndex,
-        pageSize,
-        clinicId,
-        categoryId,
-        startPrice,
-        endPrice,
-        name,
-      );
+      const results: ServiceResDto[] =
+        await this.serviceService.viewService(body);
       if (Array.isArray(results) && results.length > 0) {
         return {
-          pageIndex: pageIndex,
-          pageCount: results[0].RecordCount / pageSize,
-          pageSize: pageSize,
+          pageIndex: body.pageIndex,
+          pageCount: results[0].recordCount / body.pageSize,
+          pageSize: body.pageSize,
           data: results,
-          name: name,
-          startPrice: startPrice,
-          endPrice: endPrice,
-          clinicId: clinicId,
-          categoryId: categoryId,
+          name: body.name,
+          startPrice: body.startPrice,
+          endPrice: body.endPrice,
+          clinicId: body.clinicId,
+          categoryId: body.categoryId,
         };
-      } else return null;
+      } else {
+        throw new HttpException(
+          { statusCode: HttpStatus.NOT_FOUND, message: 'Not found!' },
+          HttpStatus.NOT_FOUND,
+        );
+      }
     } catch (err: any) {
       throw new HttpException(
         { statusCode: HttpStatus.BAD_REQUEST },
@@ -156,14 +152,15 @@ export class ServiceController {
   @Get('get-common')
   async getCommonService(): Promise<any> {
     try {
-      const results = await this.serviceService.getCommonService();
+      const results: ServiceResDto[] =
+        await this.serviceService.getCommonService();
       if (results.length > 0 && Array.isArray(results)) {
         return results;
       } else
         throw new HttpException(
           {
             statusCode: HttpStatus.NOT_FOUND,
-            message: 'Không tồn tại bản ghi nào!',
+            message: 'Not found!',
           },
           HttpStatus.NOT_FOUND,
         );

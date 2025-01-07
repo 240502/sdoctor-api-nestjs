@@ -7,6 +7,7 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { AppointmentService } from './appointment.service';
 import { AppointmentGateway } from './gateway';
@@ -15,6 +16,7 @@ import {
   AppointmentFilterDto,
   AppointmentResponseDto,
 } from './dto';
+import { AuthGuard } from 'src/common/guards';
 
 @Controller('/appointment')
 export class AppointmentController {
@@ -146,6 +148,7 @@ export class AppointmentController {
   }
 
   @Get('/get-appointment-in-day/:doctorId')
+  @UseGuards(AuthGuard)
   async getAppointmentInDay(
     @Param('doctorId') doctorId: number,
   ): Promise<any> {

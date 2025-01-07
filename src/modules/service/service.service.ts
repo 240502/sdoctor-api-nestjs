@@ -1,33 +1,33 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseHelper } from 'src/common/database/helper';
-import { Service } from 'src/models';
+import {
+  ServiceCreateDto,
+  ServiceResDto,
+  ServiceUpdateDto,
+  ServiceFilterDto,
+} from './dto';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class ServiceService {
   constructor(private db: DatabaseHelper) {}
   async createService(
-    service: Service,
-  ): Promise<any> {
+    service: ServiceCreateDto,
+  ): Promise<ServiceResDto> {
     try {
       const procedureName = 'CreateService';
-      const results = await this.db.callProcedure(
-        procedureName,
-        [
-          service.name,
-          service.summary,
-          service.price,
-          service.clinicId,
-          service.categoryId,
-          service.image,
-          service.preparationProcess,
-          service.serviceDetail,
-        ],
-      );
-      if (
-        Array.isArray(results) &&
-        results.length > 0
-      ) {
-        return results[0];
+      const results = await this.db.callProcedure(procedureName, [
+        service.name,
+        service.summary,
+        service.price,
+        service.clinicId,
+        service.categoryId,
+        service.image,
+        service.preparationProcess,
+        service.serviceDetail,
+      ]);
+      if (Array.isArray(results) && results.length > 0) {
+        return plainToInstance(ServiceResDto, results[0]);
       } else {
         return null;
       }
@@ -36,29 +36,23 @@ export class ServiceService {
     }
   }
   async updateService(
-    service: Service,
-  ): Promise<any> {
+    service: ServiceUpdateDto,
+  ): Promise<ServiceResDto> {
     try {
       const procedureName = 'UpdateService';
-      const results = await this.db.callProcedure(
-        procedureName,
-        [
-          service.id,
-          service.name,
-          service.summary,
-          service.price,
-          service.clinicId,
-          service.categoryId,
-          service.image,
-          service.preparationProcess,
-          service.serviceDetail,
-        ],
-      );
-      if (
-        Array.isArray(results) &&
-        results.length > 0
-      ) {
-        return results[0];
+      const results = await this.db.callProcedure(procedureName, [
+        service.id,
+        service.name,
+        service.summary,
+        service.price,
+        service.clinicId,
+        service.categoryId,
+        service.image,
+        service.preparationProcess,
+        service.serviceDetail,
+      ]);
+      if (Array.isArray(results) && results.length > 0) {
+        return plainToInstance(ServiceResDto, results[0]);
       } else {
         return null;
       }
@@ -70,89 +64,61 @@ export class ServiceService {
   async deleteService(id: number): Promise<any> {
     try {
       const procedureName = 'DeleteService';
-      await this.db.callProcedure(procedureName, [
-        id,
-      ]);
+      await this.db.callProcedure(procedureName, [id]);
       return true;
     } catch (err: any) {
       throw new Error(err.message);
     }
   }
-  async updateServiceViews(
-    id: number,
-  ): Promise<any> {
+  async updateServiceViews(id: number): Promise<any> {
     try {
-      const procedureName = 'UpdateServiceViews';
-      await this.db.callProcedure(procedureName, [
-        id,
-      ]);
+      const procedureName = 'UpdateViewService';
+      await this.db.callProcedure(procedureName, [id]);
       return true;
     } catch (err: any) {
       throw new Error(err.message);
     }
   }
-  async getServiceById(id: number): Promise<any> {
+  async getServiceById(id: number): Promise<ServiceResDto | null> {
     try {
       const procedureName = 'GetServiceById';
-      const results = await this.db.callProcedure(
-        procedureName,
-        [id],
-      );
-      if (
-        Array.isArray(results) &&
-        results.length > 0
-      ) {
-        return results[0];
+      const results = await this.db.callProcedure(procedureName, [
+        id,
+      ]);
+      if (Array.isArray(results) && results.length > 0) {
+        return plainToInstance(ServiceResDto, results[0]);
       } else return null;
     } catch (err: any) {
       throw new Error(err.message);
     }
   }
   async viewService(
-    pageIndex: number,
-    pageSize: number,
-    clinicId: number,
-    categoryId: number,
-    startPrice: number,
-    endPrice: number,
-    name: string,
-  ): Promise<any> {
+    body: ServiceFilterDto,
+  ): Promise<ServiceResDto[] | null> {
     try {
       const procedureName = 'ViewService';
-      const results = await this.db.callProcedure(
-        procedureName,
-        [
-          pageIndex,
-          pageSize,
-          clinicId,
-          categoryId,
-          startPrice,
-          endPrice,
-          name,
-        ],
-      );
-      if (
-        Array.isArray(results) &&
-        results.length > 0
-      ) {
-        return results;
+      const results = await this.db.callProcedure(procedureName, [
+        body.pageIndex,
+        body.pageSize,
+        body.clinicId,
+        body.categoryId,
+        body.startPrice,
+        body.endPrice,
+        body.name,
+      ]);
+      if (Array.isArray(results) && results.length > 0) {
+        return plainToInstance(ServiceResDto, results);
       } else return null;
     } catch (err: any) {
       throw new Error(err.message);
     }
   }
-  async getCommonService(): Promise<any> {
+  async getCommonService(): Promise<ServiceResDto[] | null> {
     try {
       const procedureName = 'GetCommonService';
-      const results = await this.db.callProcedure(
-        procedureName,
-        [],
-      );
-      if (
-        Array.isArray(results) &&
-        results.length > 0
-      ) {
-        return results;
+      const results = await this.db.callProcedure(procedureName, []);
+      if (Array.isArray(results) && results.length > 0) {
+        return plainToInstance(ServiceResDto, results);
       } else return null;
     } catch (err: any) {
       throw new Error(err.message);
