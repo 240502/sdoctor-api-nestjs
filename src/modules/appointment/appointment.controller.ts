@@ -9,8 +9,12 @@ import {
   Put,
 } from '@nestjs/common';
 import { AppointmentService } from './appointment.service';
-import { Appointment } from 'src/models/Appointment';
-import { AppointmentGateway } from './gateway/appointment.gateway';
+import { AppointmentGateway } from './gateway';
+import {
+  AppointmentCreateDto,
+  AppointmentFilterDto,
+  AppointmentResponseDto,
+} from './dto';
 
 @Controller('/appointment')
 export class AppointmentController {
@@ -21,13 +25,13 @@ export class AppointmentController {
 
   @Post('/create')
   async createAppointment(
-    @Body() appointment: Appointment,
+    @Body() appointment: AppointmentCreateDto,
   ): Promise<any> {
     try {
-      const result =
+      const result: AppointmentResponseDto =
         await this.appointmentService.createAppointment(appointment);
       if (result) {
-        this.appointmentGateway.notifyToAllClient(appointment);
+        this.appointmentGateway.notifyToAllClient(result);
         return result;
       }
     } catch (err: any) {
@@ -44,28 +48,22 @@ export class AppointmentController {
   @Post('/view')
   async ViewAppointment(
     @Body()
-    body: {
-      pageIndex: number;
-      pageSize: number;
-      phone: string;
-      statusId: number;
-    },
+    body: AppointmentFilterDto,
   ): Promise<any> {
     try {
-      const { pageIndex, pageSize, phone, statusId } = body;
-      const results = await this.appointmentService.ViewAppointments(
-        pageIndex,
-        pageSize,
-        phone,
-        statusId,
-      );
+      const results: AppointmentResponseDto[] =
+        await this.appointmentService.ViewAppointments(body);
       if (results) {
         return {
-          pageIndex: pageIndex,
-          pageSize: pageSize,
+          pageIndex: body.pageIndex,
+          pageSize: body.pageSize,
           data: results,
-          phone: phone,
-          statusId: statusId,
+          phone: body.phone,
+          statusId: body.statusId,
+          pageCount: Math.ceil(
+            results[0].recordCount / body.pageSize,
+          ),
+          totalItems: results[0].recordCount,
         };
       }
     } catch (err: any) {
@@ -79,7 +77,7 @@ export class AppointmentController {
   @Get('/get-by-id/:id')
   async getAppointmentById(@Param('id') id: number): Promise<any> {
     try {
-      const result =
+      const result: AppointmentResponseDto =
         await this.appointmentService.getAppointmentById(id);
       if (result) {
         return result;
@@ -111,7 +109,7 @@ export class AppointmentController {
         patientPhone,
         appointmentDate,
       } = body;
-      const result =
+      const result: AppointmentResponseDto =
         await this.appointmentService.getAppointmentAtInvoice(
           patientName,
           doctorName,
@@ -152,7 +150,7 @@ export class AppointmentController {
     @Param('doctorId') doctorId: number,
   ): Promise<any> {
     try {
-      const results =
+      const results: AppointmentResponseDto[] =
         await this.appointmentService.getAppointmentInDay(doctorId);
       if (results) {
         return results;

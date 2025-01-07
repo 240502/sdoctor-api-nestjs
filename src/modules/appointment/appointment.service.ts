@@ -1,14 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseHelper } from 'src/common/database/helper';
-import { Appointment } from 'src/models/Appointment';
+import {
+  AppointmentCreateDto,
+  AppointmentFilterDto,
+  AppointmentResponseDto,
+} from './dto';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class AppointmentService {
   constructor(private db: DatabaseHelper) {}
 
   async createAppointment(
-    appointment: Appointment,
-  ): Promise<Appointment | null> {
+    appointment: AppointmentCreateDto,
+  ): Promise<AppointmentResponseDto | null> {
     try {
       const procedureName = 'OrderAppointment';
       const results = await this.db.callProcedure(procedureName, [
@@ -32,7 +37,11 @@ export class AppointmentService {
         appointment.serviceName,
       ]);
       if (Array.isArray(results) && results.length > 0) {
-        return results[0];
+        const appointment = plainToInstance(
+          AppointmentResponseDto,
+          results[0],
+        );
+        return appointment;
       } else return null;
     } catch (err: any) {
       throw new Error(err.message);
@@ -40,21 +49,20 @@ export class AppointmentService {
   }
 
   async ViewAppointments(
-    pageIndex: number,
-    pageSize: number,
-    phone: string,
-    statusId: number,
-  ): Promise<Appointment[] | null> {
+    body: AppointmentFilterDto,
+  ): Promise<AppointmentResponseDto[] | null> {
     try {
       const procedureName = 'ViewAppointment';
       const results = await this.db.callProcedure(procedureName, [
-        pageIndex,
-        pageSize,
-        phone,
-        statusId,
+        body.pageIndex,
+        body.pageSize,
+        body.phone,
+        body.statusId,
       ]);
       if (Array.isArray(results) && results.length > 0) {
-        return results;
+        const appointments: AppointmentResponseDto[] =
+          plainToInstance(AppointmentResponseDto, results);
+        return appointments;
       } else {
         return null;
       }
@@ -63,12 +71,18 @@ export class AppointmentService {
     }
   }
 
-  async getAppointmentById(id: number): Promise<Appointment | null> {
+  async getAppointmentById(
+    id: number,
+  ): Promise<AppointmentResponseDto | null> {
     try {
-      const procedureName = 'GetAppointmentBYId';
+      const procedureName = 'GetAppointmentById';
       const results = this.db.callProcedure(procedureName, [id]);
       if (Array.isArray(results) && results.length > 0) {
-        return results[0];
+        const appointment = plainToInstance(
+          AppointmentResponseDto,
+          results[0],
+        );
+        return appointment;
       } else {
         return null;
       }
@@ -81,7 +95,7 @@ export class AppointmentService {
     doctorName: string,
     patientPhone: string,
     appointmentDate: Date,
-  ): Promise<Appointment | null> {
+  ): Promise<AppointmentResponseDto | null> {
     try {
       const procedureName = 'GetAppointmentAtInvoice';
       const results = await this.db.callProcedure(procedureName, [
@@ -91,7 +105,11 @@ export class AppointmentService {
         appointmentDate,
       ]);
       if (Array.isArray(results) && results.length > 0) {
-        return results[0];
+        const appointment = plainToInstance(
+          AppointmentResponseDto,
+          results[0],
+        );
+        return appointment;
       } else return null;
     } catch (err: any) {
       throw new Error(err.message);
@@ -106,15 +124,39 @@ export class AppointmentService {
       throw new Error(err.message);
     }
   }
-  async getAppointmentInDay(doctorId: number): Promise<Appointment[] | null> {
+  async getAppointmentInDay(
+    doctorId: number,
+  ): Promise<AppointmentResponseDto[] | null> {
     try {
       const procedureName = 'GetAppointmentInDay';
-      const results = await this.db.callProcedure(procedureName, [doctorId]);
+      const results = await this.db.callProcedure(procedureName, [
+        doctorId,
+      ]);
       if (Array.isArray(results) && results.length > 0) {
-        return results;
+        const appointments: AppointmentResponseDto[] =
+          plainToInstance(AppointmentResponseDto, results);
+        return appointments;
       } else {
         return null;
       }
+    } catch (err: any) {
+      throw new Error(err.message);
+    }
+  }
+
+  async updateAppointmentStatus(
+    id: number,
+    status: number,
+    reason: string,
+  ): Promise<any> {
+    try {
+      const procedureName = 'UpdateAppointmentStatus';
+      await this.db.callProcedure(procedureName, [
+        id,
+        status,
+        reason,
+      ]);
+      return true;
     } catch (err: any) {
       throw new Error(err.message);
     }

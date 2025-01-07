@@ -1,43 +1,45 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseHelper } from 'src/common/database/helper';
-import { Clinic } from 'src/models';
+import {
+  ClinicCreateDto,
+  ClinicResponseDto,
+  ClinicUpdateDto,
+} from './dto';
+import { plainToInstance } from 'class-transformer';
+import { ClinicFilterDto } from './dto/clinic-filter.dto';
 
 @Injectable()
 export class ClinicService {
   constructor(private db: DatabaseHelper) {}
 
-  async createClinic(
-    newClinic: Clinic,
-  ): Promise<any> {
+  async createClinic(newClinic: ClinicCreateDto): Promise<any> {
     try {
       const procedureName = 'CreateClinic';
-      await this.db.callProcedure(procedureName, [
+      const results = await this.db.callProcedure(procedureName, [
         newClinic.name,
         newClinic.description,
         newClinic.location,
         newClinic.avatar,
         newClinic.coverImage,
       ]);
-      return true;
+      if (Array.isArray(results) && results.length > 0) {
+        return plainToInstance(ClinicResponseDto, results[0]);
+      }
     } catch (err: any) {
       throw new Error(err.message);
     }
   }
-  async updateClinicViews(
-    clinicId: number,
-  ): Promise<any> {
+  async updateClinicViews(clinicId: number): Promise<any> {
     try {
       const procedureName = 'UpdateViewsClinic';
-      await this.db.callProcedure(procedureName, [
-        clinicId,
-      ]);
+      await this.db.callProcedure(procedureName, [clinicId]);
       return true;
     } catch (err: any) {
       throw new Error(err.message);
     }
   }
 
-  async updateClinic(clinic: Clinic) {
+  async updateClinic(clinic: ClinicUpdateDto) {
     try {
       const procedureName = 'UpdateClinic';
       await this.db.callProcedure(procedureName, [
@@ -47,44 +49,36 @@ export class ClinicService {
         clinic.location,
         clinic.avatar,
         clinic.coverImage,
-        clinic.createdAt,
       ]);
       return true;
     } catch (err: any) {
       throw new Error(err.message);
     }
   }
-  async deleteClinic(
-    clinicId: number,
-  ): Promise<any> {
+  async deleteClinic(clinicId: number): Promise<any> {
     try {
       const procedureName = 'DeleteClinic';
-      await this.db.callProcedure(procedureName, [
-        clinicId,
-      ]);
+      await this.db.callProcedure(procedureName, [clinicId]);
       return true;
     } catch (err: any) {
       throw new Error(err.message);
     }
   }
   async viewClinic(
-    pageIndex: number,
-    pageSize: number,
-    location: string | null,
-    name: string | null,
-  ): Promise<Clinic[] | null> {
+    body: ClinicFilterDto,
+  ): Promise<ClinicResponseDto[] | null> {
     try {
       const procedureName = 'GetClinicView';
-      const results: Clinic[] =
-        await this.db.callProcedure(
-          procedureName,
-          [pageIndex, pageSize, location, name],
-        );
-      if (
-        Array.isArray(results) &&
-        results.length > 0
-      ) {
-        return results;
+      const results: ClinicResponseDto[] =
+        await this.db.callProcedure(procedureName, [
+          body.pageIndex,
+          body.pageSize,
+          body.location,
+          body.name,
+        ]);
+      if (Array.isArray(results) && results.length > 0) {
+        const clinics = plainToInstance(ClinicResponseDto, results);
+        return clinics;
       } else {
         return null;
       }
@@ -92,20 +86,14 @@ export class ClinicService {
       throw new Error(err.message);
     }
   }
-  async getClinicById(
-    id: number,
-  ): Promise<Clinic | null> {
+  async getClinicById(id: number): Promise<ClinicResponseDto | null> {
     try {
       const procedureName = 'GetClinicById';
-      const results = await this.db.callProcedure(
-        procedureName,
-        [id],
-      );
-      if (
-        Array.isArray(results) &&
-        results.length > 0
-      ) {
-        return results[0];
+      const results = await this.db.callProcedure(procedureName, [
+        id,
+      ]);
+      if (Array.isArray(results) && results.length > 0) {
+        return plainToInstance(ClinicResponseDto, results[0]);
       } else {
         return null;
       }
@@ -113,20 +101,13 @@ export class ClinicService {
       throw new Error(err.message);
     }
   }
-  async getCommonClinic(): Promise<
-    Clinic[] | null
-  > {
+  async getCommonClinic(): Promise<ClinicResponseDto[] | null> {
     try {
       const procedureName = 'GetCommonClinic';
-      const results = await this.db.callProcedure(
-        procedureName,
-        [],
-      );
-      if (
-        Array.isArray(results) &&
-        results.length > 0
-      ) {
-        return results;
+      const results = await this.db.callProcedure(procedureName, []);
+      if (Array.isArray(results) && results.length > 0) {
+        const clinics = plainToInstance(ClinicResponseDto, results);
+        return clinics;
       } else {
         return null;
       }

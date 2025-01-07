@@ -10,22 +10,25 @@ import {
   Put,
 } from '@nestjs/common';
 import { ClinicService } from './clinic.service';
-import { Clinic } from 'src/models';
+import {
+  ClinicCreateDto,
+  ClinicUpdateDto,
+  ClinicResponseDto,
+} from './dto';
+import { ClinicFilterDto } from './dto/clinic-filter.dto';
 
 @Controller('clinic')
 export class ClinicController {
-  constructor(
-    private clinicService: ClinicService,
-  ) {}
+  constructor(private clinicService: ClinicService) {}
 
   @Post('create')
-  async createClinic(@Body() clinic: Clinic) {
+  async createClinic(@Body() clinic: ClinicCreateDto) {
     try {
-      await this.clinicService.createClinic(
-        clinic,
-      );
+      const result: ClinicResponseDto =
+        await this.clinicService.createClinic(clinic);
       return {
         message: 'Created successfully',
+        result: result,
       };
     } catch (err: any) {
       throw new HttpException(
@@ -39,13 +42,9 @@ export class ClinicController {
   }
 
   @Put('update-views/:id')
-  async updateClinicViews(
-    @Param('id') id: number,
-  ) {
+  async updateClinicViews(@Param('id') id: number) {
     try {
-      await this.clinicService.updateClinicViews(
-        id,
-      );
+      await this.clinicService.updateClinicViews(id);
       return {
         message: 'Updated successfully',
       };
@@ -61,11 +60,9 @@ export class ClinicController {
   }
 
   @Put('update')
-  async updateClinic(@Body() clinic: Clinic) {
+  async updateClinic(@Body() clinic: ClinicUpdateDto) {
     try {
-      await this.clinicService.updateClinic(
-        clinic,
-      );
+      await this.clinicService.updateClinic(clinic);
       return {
         message: 'Updated successfully',
       };
@@ -73,7 +70,7 @@ export class ClinicController {
       throw new HttpException(
         {
           statusCode: HttpStatus.BAD_REQUEST,
-          messsage: err.message,
+          message: err.message,
         },
         HttpStatus.BAD_REQUEST,
       );
@@ -100,36 +97,19 @@ export class ClinicController {
   @Post('view')
   async viewClinic(
     @Body()
-    body: {
-      pageIndex: number;
-      pageSize: number;
-      location: string | null;
-      name: string | null;
-    },
+    body: ClinicFilterDto,
   ) {
     try {
-      const {
-        pageIndex,
-        pageSize,
-        location,
-        name,
-      } = body;
-      const results: Clinic[] =
-        await this.clinicService.viewClinic(
-          pageIndex,
-          pageSize,
-          location,
-          name,
-        );
+      const results: ClinicResponseDto[] =
+        await this.clinicService.viewClinic(body);
       if (results) {
         return {
-          pageIndex: pageIndex,
-          pageSize: pageSize,
-          pageCount:
-            results[0].RecordCount / pageSize,
+          pageIndex: body.pageIndex,
+          pageSize: body.pageSize,
+          pageCount: results[0].recordCount / body.pageSize,
           data: results,
-          location: location,
-          name: name,
+          location: body.location,
+          name: body.name,
         };
       } else {
         throw new HttpException(
@@ -152,18 +132,11 @@ export class ClinicController {
   }
 
   @Get('get-by-id/:id')
-  async getClinicById(
-    @Param('id') id: number,
-  ): Promise<any> {
+  async getClinicById(@Param('id') id: number): Promise<any> {
     try {
-      const results =
-        await this.clinicService.getClinicById(
-          id,
-        );
-      if (
-        Array.isArray(results) &&
-        results.length > 0
-      ) {
+      const results: ClinicResponseDto =
+        await this.clinicService.getClinicById(id);
+      if (Array.isArray(results) && results.length > 0) {
         return results[0];
       } else
         throw new HttpException(
@@ -186,12 +159,9 @@ export class ClinicController {
   @Get('get-common')
   async getCommonClinic(): Promise<any> {
     try {
-      const results =
+      const results: ClinicResponseDto[] =
         await this.clinicService.getCommonClinic();
-      if (
-        results.length > 0 &&
-        Array.isArray(results)
-      ) {
+      if (results.length > 0 && Array.isArray(results)) {
         return results;
       } else {
         throw new HttpException(

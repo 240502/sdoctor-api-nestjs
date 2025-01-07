@@ -4,6 +4,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { AppointmentStatusService } from './appointment-status.service';
+import { AppointmentStatusResponse } from './dto';
 
 @Controller('appointment-status')
 export class AppointmentStatusController {
@@ -13,7 +14,7 @@ export class AppointmentStatusController {
 
   async getAllAppointmentStatus(): Promise<any> {
     try {
-      const results =
+      const results: AppointmentStatusResponse[] =
         await this.appointmentStatusService.getAllAppointmentStatus();
       if (Array.isArray(results) && results.length > 0) {
         return results;

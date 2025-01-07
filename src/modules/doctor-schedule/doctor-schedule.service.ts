@@ -5,13 +5,19 @@ import {
   DoctorScheduleDetail,
   Time,
 } from 'src/models';
+import {
+  DoctorScheduleCreateDto,
+  DoctorScheduleResponseDto,
+  DoctorScheduleUpdateDto,
+} from './dto';
+import { DoctorScheduleDetailResponseDto } from '../doctor-schedule-detail/dto';
 @Injectable()
 export class DoctorScheduleService {
   constructor(private db: DatabaseHelper) {}
 
   async createSchedule(
-    schedule: DoctorSchedule,
-  ): Promise<DoctorSchedule> {
+    schedule: DoctorScheduleCreateDto,
+  ): Promise<DoctorScheduleResponseDto> {
     try {
       const procedureName = 'CreateSchedule';
       const results = await this.db.callProcedure(procedureName, [
@@ -20,34 +26,25 @@ export class DoctorScheduleService {
         JSON.stringify(schedule.doctorScheduleDetails),
       ]);
       if (Array.isArray(results) && results.length > 0) {
-        const listScheduleDetails: DoctorScheduleDetail[] = [];
+        const listScheduleDetails: DoctorScheduleDetailResponseDto[] =
+          [];
         for (let i = 0; i < results.length; i++) {
-          let time: Time = {
-            id: results[i].time_id,
-            startTime: results[i].start_time,
-            endTime: results[i].end_time,
-            interval: null,
-            appointments: null,
-            doctorScheduleDetails: null,
-            serviceScheduleDetails: null,
-          };
-          let ScheduleDetail: DoctorScheduleDetail = {
+          let ScheduleDetail: DoctorScheduleDetailResponseDto = {
             id: results[i].schedule_detail_id,
             scheduleId: results[i].schedule_id,
             timeId: results[i].time_id,
             available: results[i].available,
-            time: time,
-            schedule: null,
+            startTime: results[i].start_time,
+            endTime: results[i].end_time,
           };
           listScheduleDetails.push(ScheduleDetail);
         }
-        const schedule: DoctorSchedule = {
+        const schedule: DoctorScheduleResponseDto = {
           id: results[0].id,
           doctorId: results[0].doctor_id,
           date: results[0].date,
           createdAt: results[0].created_at,
           updatedAt: results[0].updated_at,
-          doctor: null,
           doctorScheduleDetails: listScheduleDetails,
         };
         return schedule;
@@ -57,12 +54,14 @@ export class DoctorScheduleService {
     }
   }
 
-  async updateSchedule(id: number, scheduleDetails): Promise<any> {
+  async updateSchedule(
+    doctorScheduleUpdateDto: DoctorScheduleUpdateDto,
+  ): Promise<any> {
     try {
       const procedureName = 'UpdateSchedule';
       await this.db.callProcedure(procedureName, [
-        id,
-        JSON.stringify(scheduleDetails),
+        doctorScheduleUpdateDto.id,
+        JSON.stringify(doctorScheduleUpdateDto.scheduleDetails),
       ]);
       return true;
     } catch (err: any) {
@@ -84,7 +83,10 @@ export class DoctorScheduleService {
       throw new Error(err.message);
     }
   }
-  async viewSchedule(date: Date, doctorId: number): Promise<any> {
+  async viewSchedule(
+    date: Date,
+    doctorId: number,
+  ): Promise<DoctorScheduleResponseDto | null> {
     try {
       const procedureName = 'ViewSchedule';
       const results = await this.db.callProcedure(procedureName, [
@@ -94,7 +96,8 @@ export class DoctorScheduleService {
       console.log(results);
 
       if (Array.isArray(results) && results.length > 0) {
-        const listScheduleDetails: DoctorScheduleDetail[] = [];
+        const listScheduleDetails: DoctorScheduleDetailResponseDto[] =
+          [];
         for (let i = 0; i < results.length; i++) {
           let time: Time = {
             id: results[i].time_id,
@@ -105,23 +108,22 @@ export class DoctorScheduleService {
             doctorScheduleDetails: null,
             serviceScheduleDetails: null,
           };
-          let ScheduleDetail: DoctorScheduleDetail = {
+          let ScheduleDetail: DoctorScheduleDetailResponseDto = {
             id: results[i].schedule_detail_id,
             scheduleId: results[i].schedule_id,
             timeId: results[i].time_id,
             available: results[i].available,
-            time: time,
-            schedule: null,
+            startTime: results[i].start_time,
+            endTime: results[i].end_time,
           };
           listScheduleDetails.push(ScheduleDetail);
         }
-        const schedule: DoctorSchedule = {
+        const schedule: DoctorScheduleResponseDto = {
           id: results[0].id,
           doctorId: results[0].doctor_id,
           date: results[0].date,
           createdAt: results[0].created_at,
           updatedAt: results[0].updated_at,
-          doctor: null,
           doctorScheduleDetails: listScheduleDetails,
         };
         return schedule;

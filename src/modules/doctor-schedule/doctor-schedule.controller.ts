@@ -3,29 +3,37 @@ import {
   Post,
   Put,
   Delete,
-  Get,
   Param,
   Body,
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
-import { DoctorSchedule, DoctorScheduleDetail } from 'src/models';
 import { DoctorScheduleService } from './doctor-schedule.service';
+import {
+  DoctorScheduleCreateDto,
+  DoctorScheduleResponseDto,
+  DoctorScheduleUpdateDto,
+} from './dto';
 @Controller('doctor-schedule')
 export class DoctorScheduleController {
   constructor(private doctorScheduleService: DoctorScheduleService) {}
 
   @Post('create')
   async createSchedule(
-    @Body() doctorSchedule: DoctorSchedule,
+    @Body() doctorSchedule: DoctorScheduleCreateDto,
   ): Promise<any> {
     try {
-      const result =
+      const result: DoctorScheduleResponseDto =
         await this.doctorScheduleService.createSchedule(
           doctorSchedule,
         );
       if (result) {
         return result;
+      } else {
+        throw new HttpException(
+          { statusCode: HttpStatus.NOT_FOUND, message: 'Not found!' },
+          HttpStatus.NOT_FOUND,
+        );
       }
     } catch (err: any) {
       throw new HttpException(
@@ -37,14 +45,10 @@ export class DoctorScheduleController {
 
   @Put('update')
   async updateSchedule(
-    @Body() body: { id: number; scheduleDetails: any },
+    @Body() body: DoctorScheduleUpdateDto,
   ): Promise<any> {
     try {
-      const { id, scheduleDetails } = body;
-      await this.doctorScheduleService.updateSchedule(
-        id,
-        scheduleDetails,
-      );
+      await this.doctorScheduleService.updateSchedule(body);
       return { message: 'Updated successfully' };
     } catch (err: any) {
       throw new HttpException(

@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseHelper } from 'src/common/database/helper';
+import { DoctorScheduleDetailResponseDto } from './dto';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class DoctorScheduleDetailService {
@@ -18,14 +20,15 @@ export class DoctorScheduleDetailService {
   }
   async getScheduleDetailsByScheduleId(
     scheduleId: number,
-  ): Promise<any> {
+  ): Promise<DoctorScheduleDetailResponseDto[]> {
     try {
       const sql = 'getScheduleDetailsByScheduleId';
-      const [results] = await this.db.callProcedure(sql, [
-        scheduleId,
-      ]);
+      const results = await this.db.callProcedure(sql, [scheduleId]);
       if (Array.isArray(results) && results.length > 0) {
-        return results;
+        return plainToInstance(
+          DoctorScheduleDetailResponseDto,
+          results,
+        );
       } else return null;
     } catch (err: any) {
       throw new Error(err.message);

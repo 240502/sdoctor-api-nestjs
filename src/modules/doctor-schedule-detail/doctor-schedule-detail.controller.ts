@@ -7,6 +7,7 @@ import {
   HttpException,
 } from '@nestjs/common';
 import { DoctorScheduleDetailService } from './doctor-schedule-detail.service';
+import { DoctorScheduleDetailResponseDto } from './dto';
 
 @Controller('doctor-schedule-detail')
 export class DoctorScheduleDetailController {
@@ -19,7 +20,7 @@ export class DoctorScheduleDetailController {
     @Param('scheduleId') scheduleId: number,
   ): Promise<any> {
     try {
-      const results =
+      const results: DoctorScheduleDetailResponseDto[] =
         await this.doctorScheduleDetails.getScheduleDetailsByScheduleId(
           scheduleId,
         );

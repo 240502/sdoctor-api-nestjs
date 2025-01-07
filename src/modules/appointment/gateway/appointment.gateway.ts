@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { BaseGateway } from 'src/common/shared';
-import { Appointment } from 'src/models';
+import { AppointmentResponseDto } from '../dto';
 
 @Injectable()
 export class AppointmentGateway extends BaseGateway {
@@ -9,7 +9,7 @@ export class AppointmentGateway extends BaseGateway {
    * @param doctorId ID của bác sĩ
    * @param message Nội dung thông báo
    */
-  notifyToAllClient(appointment: Appointment): void {
+  notifyToAllClient(appointment: AppointmentResponseDto): void {
     this.emitToAll('appointment:new', appointment);
   }
 }
