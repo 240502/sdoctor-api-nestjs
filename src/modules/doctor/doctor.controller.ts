@@ -66,6 +66,7 @@ export class DoctorController {
           name,
           clinicId,
         );
+
       if (results) {
         return {
           pageIndex: pageIndex,
@@ -109,6 +110,7 @@ export class DoctorController {
           name,
           clinicId,
         );
+      console.log('data', data);
       if (results) {
         return {
           pageIndex: pageIndex,

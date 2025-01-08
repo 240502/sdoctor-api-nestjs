@@ -28,6 +28,7 @@ export class DatabaseHelper {
       const [errorResults] = await queryRunner.query(
         `SELECT @err_code AS err_code ,@err_msg AS err_msg`,
       );
+
       const { err_code, err_msg } = errorResults;
       if (err_code === '0') {
         return results[0];

@@ -43,14 +43,11 @@ export class DoctorService {
   ): Promise<DoctorResponseDto[] | null> {
     try {
       const procedureName = 'ViewDoctorForClient';
-      const results: DoctorResponseDto[] =
-        await this.db.callProcedure(procedureName, [
-          pageIndex,
-          pageSize,
-          majorId,
-          name,
-          clinicId,
-        ]);
+      const results: any = await this.db.callProcedure(
+        procedureName,
+        [pageIndex, pageSize, majorId, name, clinicId],
+      );
+
       if (Array.isArray(results) && results.length > 0) {
         const doctors: DoctorResponseDto[] = plainToInstance(
           DoctorResponseDto,

@@ -81,4 +81,13 @@ export class AppointmentResponseDto {
 
   @Expose()
   isEvaluate: number | null;
+
+  @Expose({ name: 'payment_method' })
+  paymentMethod: number;
+
+  @Expose({ name: 'status_name' })
+  statusName: string;
+
+  @Expose({ name: 'invoice_status' })
+  invoiceStatus: string;
 }

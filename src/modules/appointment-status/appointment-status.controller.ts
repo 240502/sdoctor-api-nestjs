@@ -1,5 +1,6 @@
 import {
   Controller,
+  Get,
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
@@ -12,6 +13,7 @@ export class AppointmentStatusController {
     private appointmentStatusService: AppointmentStatusService,
   ) {}
 
+  @Get('get-all')
   async getAllAppointmentStatus(): Promise<any> {
     try {
       const results: AppointmentStatusResponse[] =

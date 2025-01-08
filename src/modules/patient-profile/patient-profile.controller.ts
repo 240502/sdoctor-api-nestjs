@@ -11,6 +11,11 @@ import {
 } from '@nestjs/common';
 import { PatientProfile } from 'src/models';
 import { PatientProfileService } from './patient-profile.service';
+import {
+  PatientProfileCreateDto,
+  PatientProfileResponse,
+  PatientProfileUpdateDto,
+} from './dto';
 @Controller('patient-profile')
 export class PatientProfileController {
   constructor(private patientService: PatientProfileService) {}
@@ -18,10 +23,10 @@ export class PatientProfileController {
   @Post('get-by-phone-or-email')
   async getProfileByPhoneOrEmail(
     @Body() body: { searchContent: string },
-  ): Promise<any> {
+  ): Promise<PatientProfileResponse> {
     try {
       const { searchContent } = body;
-      const result =
+      const result: PatientProfileResponse =
         await this.patientService.getProfileByPhoneOrEmail(
           searchContent,
         );
@@ -31,7 +36,7 @@ export class PatientProfileController {
         throw new HttpException(
           {
             statusCode: HttpStatus.NOT_FOUND,
-            message: 'Không tồn tại bản ghi nào!',
+            message: 'Not found!',
           },
           HttpStatus.NOT_FOUND,
         );
@@ -39,7 +44,7 @@ export class PatientProfileController {
       throw new HttpException(
         {
           statusCode: HttpStatus.BAD_REQUEST,
-          message: 'Không tồn tại bản ghi nào!',
+          message: err.message,
         },
         HttpStatus.BAD_REQUEST,
       );
@@ -47,10 +52,15 @@ export class PatientProfileController {
   }
 
   @Post('create')
-  async createPatientProfile(@Body() patientProfile: PatientProfile) {
+  async createPatientProfile(
+    @Body() patientProfile: PatientProfileCreateDto,
+  ): Promise<any> {
     try {
-      await this.patientService.createPatientProfile(patientProfile);
-      return { message: 'created successfully' };
+      const newProfile: PatientProfileResponse =
+        await this.patientService.createPatientProfile(
+          patientProfile,
+        );
+      return { message: 'created successfully', result: newProfile };
     } catch (err: any) {
       throw new HttpException(
         { message: err.message, statusCode: HttpStatus.BAD_REQUEST },
@@ -61,7 +71,7 @@ export class PatientProfileController {
 
   @Put('update')
   async updatePatientProfile(
-    @Body() patientProfile: PatientProfile,
+    @Body() patientProfile: PatientProfileUpdateDto,
   ): Promise<any> {
     try {
       await this.patientService.updatePatientProfile(patientProfile);
@@ -87,12 +97,12 @@ export class PatientProfileController {
       );
     }
   }
-  @Get('delete/:uuid')
+  @Get('get-by-uuid/:uuid')
   async getPatientProfileByUuid(
     @Param('uuid') uuid: string,
   ): Promise<any> {
     try {
-      const result =
+      const result: PatientProfileResponse =
         await this.patientService.getPatientProfileByUuid(uuid);
       if (result) {
         return result;
