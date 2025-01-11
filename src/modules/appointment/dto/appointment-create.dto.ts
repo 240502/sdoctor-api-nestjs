@@ -13,15 +13,15 @@ export class AppointmentCreateDto {
   doctorId: number;
 
   @IsNotEmpty()
-  @IsDate()
-  appointmentDate: Date;
+  @IsString()
+  appointmentDate: string;
 
   @IsNotEmpty()
   @IsString()
   patientName: string;
 
   @IsNotEmpty()
-  @IsPhoneNumber()
+  @IsString()
   patientPhone: string;
 
   @IsNotEmpty()
@@ -29,8 +29,8 @@ export class AppointmentCreateDto {
   patientEmail: string;
 
   @IsNotEmpty()
-  @IsDate()
-  birthday: Date;
+  @IsString()
+  birthday: string;
 
   @IsNotEmpty()
   province: string;

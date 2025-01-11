@@ -31,7 +31,7 @@ export class DoctorScheduleController {
           doctorSchedule,
         );
       if (result) {
-        return result;
+        return { message: 'Created successfully', result: result };
       }
     } catch (err: any) {
       throw new HttpException(
@@ -83,6 +83,7 @@ export class DoctorScheduleController {
         date,
         doctorId,
       );
+      console.log(body);
       if (result) {
         return result;
       }

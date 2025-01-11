@@ -6,17 +6,15 @@ import {
   Body,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { AuthModel } from 'src/models';
+import { AccountCreateModel, LoginModel } from 'src/models';
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('signin')
-  async signIn(@Body() auth: AuthModel): Promise<any> {
+  async signIn(@Body() auth: LoginModel): Promise<any> {
     try {
-      console.log('auth', auth);
       const result = await this.authService.signIn(auth);
-      console.log(result);
       return result;
     } catch (err: any) {
       throw new HttpException(
@@ -30,7 +28,7 @@ export class AuthController {
   }
 
   @Post('signup')
-  async signUp(@Body() auth: AuthModel): Promise<any> {
+  async signUp(@Body() auth: AccountCreateModel): Promise<any> {
     try {
       await this.authService.signUp(auth);
       return {

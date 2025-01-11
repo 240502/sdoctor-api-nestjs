@@ -1,4 +1,9 @@
-import { IsDate, IsNotEmpty, IsNumber } from 'class-validator';
+import {
+  IsDate,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+} from 'class-validator';
 import { DoctorScheduleDetail } from 'src/models';
 
 export class DoctorScheduleCreateDto {
@@ -7,7 +12,7 @@ export class DoctorScheduleCreateDto {
   doctorId: number;
 
   @IsNotEmpty()
-  @IsDate()
+  @IsString()
   date: Date;
 
   @IsNotEmpty()

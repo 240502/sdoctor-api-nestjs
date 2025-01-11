@@ -58,7 +58,7 @@ export class DoctorResponseDto {
   @Expose()
   title: string;
 
-  @Expose()
+  @Expose({ name: 'price' })
   price: number;
 
   @Expose()

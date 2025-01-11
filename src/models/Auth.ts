@@ -1,6 +1,23 @@
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { Transform } from 'class-transformer';
+import {
+  IsEmail,
+  IsEmpty,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+  isEmpty,
+} from 'class-validator';
 
-export class AuthModel {
+export class AccountCreateModel {
+  @IsNotEmpty()
+  userId: number | null;
+
+  @IsString()
+  @IsNotEmpty()
+  password: string;
+}
+
+export class LoginModel {
   @IsEmail()
   @IsNotEmpty()
   email: string;
@@ -8,6 +25,4 @@ export class AuthModel {
   @IsString()
   @IsNotEmpty()
   password: string;
-
-  userId: number;
 }

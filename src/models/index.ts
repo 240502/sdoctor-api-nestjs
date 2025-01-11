@@ -23,5 +23,4 @@ export * from './ServiceCategory';
 export * from './ServiceSchedule';
 export * from './ServiceScheduleDetail';
 export * from './Time';
-
 export * from './User';

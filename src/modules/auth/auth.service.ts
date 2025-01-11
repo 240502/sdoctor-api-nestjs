@@ -1,5 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { AuthModel, Functions, User } from 'src/models';
+import {
+  AccountCreateModel,
+  Functions,
+  LoginModel,
+  User,
+} from 'src/models';
 import * as argon from 'argon2';
 import { DatabaseHelper } from 'src/common/database/helper';
 import { JwtService } from '@nestjs/jwt';
@@ -19,14 +24,15 @@ export class AuthService {
     return token;
   }
 
-  async signIn(auth: AuthModel): Promise<any> {
+  async signIn(auth: LoginModel): Promise<any> {
+    console.log('auth', auth);
     try {
       const procedureName = 'Login';
       const results = await this.databaseHelper.callProcedure(
         procedureName,
         [auth.email],
       );
-
+      console.log(results);
       if (results.length === 0) {
         throw new Error('Email không tồn tại!');
       }
@@ -85,9 +91,10 @@ export class AuthService {
       throw new Error(err.message);
     }
   }
-  async signUp(auth: AuthModel): Promise<any> {
+  async signUp(auth: AccountCreateModel): Promise<any> {
     try {
       const hash = await argon.hash(auth.password);
+      console.log(auth);
       const procedureName = 'CreateAccount';
       await this.databaseHelper.callProcedure(procedureName, [
         auth.userId,

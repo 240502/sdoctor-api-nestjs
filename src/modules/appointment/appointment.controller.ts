@@ -148,13 +148,61 @@ export class AppointmentController {
   }
 
   @Get('/get-appointment-in-day/:doctorId')
-  @UseGuards(AuthGuard)
   async getAppointmentInDay(
+    @Param('doctorId') doctorId: number,
+  ): Promise<any> {
+    console.log('doctorId', doctorId);
+    try {
+      const results: AppointmentResponseDto[] =
+        await this.appointmentService.getAppointmentInDay(doctorId);
+      if (results) {
+        return results;
+      } else {
+        throw new HttpException(
+          { statusCode: HttpStatus.NOT_FOUND, message: 'Not found' },
+          HttpStatus.NOT_FOUND,
+        );
+      }
+    } catch (err: any) {
+      throw new HttpException(
+        { statusCode: HttpStatus.BAD_REQUEST, message: err.message },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  @Get('/get-total-patient-in-day/:doctorId')
+  async getTotalPatientInDay(
     @Param('doctorId') doctorId: number,
   ): Promise<any> {
     try {
       const results: AppointmentResponseDto[] =
-        await this.appointmentService.getAppointmentInDay(doctorId);
+        await this.appointmentService.getTotalPatientInDay(doctorId);
+      if (results) {
+        return results;
+      } else {
+        throw new HttpException(
+          { statusCode: HttpStatus.NOT_FOUND, message: 'Not found' },
+          HttpStatus.NOT_FOUND,
+        );
+      }
+    } catch (err: any) {
+      throw new HttpException(
+        { statusCode: HttpStatus.BAD_REQUEST, message: err.message },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  @Get('/get-total-examined-patient-in-day/:doctorId')
+  async getTotalExaminedPatientInDay(
+    @Param('doctorId') doctorId: number,
+  ): Promise<any> {
+    try {
+      const results: AppointmentResponseDto[] =
+        await this.appointmentService.getTotalExaminedPatientInDay(
+          doctorId,
+        );
       if (results) {
         return results;
       } else {

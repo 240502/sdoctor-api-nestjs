@@ -144,6 +144,37 @@ export class AppointmentService {
       throw new Error(err.message);
     }
   }
+  async getTotalExaminedPatientInDay(doctorId: number): Promise<any> {
+    try {
+      const procedureName = 'GetTotalPatientExaminedInDay';
+      const results = await this.db.callProcedure(procedureName, [
+        doctorId,
+      ]);
+      if (Array.isArray(results) && results.length > 0) {
+        return results[0];
+      } else {
+        return null;
+      }
+    } catch (err: any) {
+      throw new Error(err.message);
+    }
+  }
+
+  async getTotalPatientInDay(doctorId: number): Promise<any> {
+    try {
+      const procedureName = 'GetTotalPatientInDay';
+      const results = await this.db.callProcedure(procedureName, [
+        doctorId,
+      ]);
+      if (Array.isArray(results) && results.length > 0) {
+        return results[0];
+      } else {
+        return null;
+      }
+    } catch (err: any) {
+      throw new Error(err.message);
+    }
+  }
 
   async updateAppointmentStatus(
     id: number,
