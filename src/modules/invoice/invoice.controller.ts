@@ -11,6 +11,11 @@ import {
 } from '@nestjs/common';
 import { InvoiceService } from './invoice.service';
 import { Invoices } from 'src/models';
+import {
+  InvoiceCreateDto,
+  InvoiceResponseDto,
+  InvoiceUpdateDto,
+} from './dto';
 @Controller('invoice')
 export class InvoiceController {
   constructor(private invoiceService: InvoiceService) {}
@@ -18,7 +23,7 @@ export class InvoiceController {
   @Get('get-by-appointment-id/:appointmentId')
   async getInvoiceByAppointmentId(
     @Param('appointmentId') appointmentId: number,
-  ): Promise<Invoices | null> {
+  ): Promise<InvoiceResponseDto | null> {
     try {
       const invoice =
         await this.invoiceService.getInvoiceByAppointmentId(
@@ -46,7 +51,9 @@ export class InvoiceController {
   }
 
   @Post('create')
-  async createInvoice(@Body() invoice: Invoices): Promise<any> {
+  async createInvoice(
+    @Body() invoice: InvoiceCreateDto,
+  ): Promise<any> {
     try {
       const newInvoice =
         await this.invoiceService.createInvoice(invoice);
@@ -63,7 +70,9 @@ export class InvoiceController {
   }
 
   @Put('/update')
-  async updateInvoice(@Body() invoice: Invoices): Promise<any> {
+  async updateInvoice(
+    @Body() invoice: InvoiceUpdateDto,
+  ): Promise<any> {
     try {
       await this.updateInvoice(invoice);
       return {
@@ -169,8 +178,8 @@ export class InvoiceController {
         return {
           pageIndex: pageIndex,
           pageSize: pageSize,
-          totalItems: results[0].RecordCount,
-          pageCount: Math.ceil(results[0].RecordCount.pageSize),
+          totalItems: results[0].recordCount,
+          pageCount: Math.ceil(results[0].recordCount / pageSize),
           data: results,
         };
       } else {

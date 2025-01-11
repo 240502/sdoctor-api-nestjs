@@ -1,26 +1,34 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseHelper } from 'src/common/database/helper';
 import { Invoices } from 'src/models';
+import {
+  InvoiceCreateDto,
+  InvoiceResponseDto,
+  InvoiceUpdateDto,
+} from './dto';
+import { plainToInstance } from 'class-transformer';
 @Injectable()
 export class InvoiceService {
   constructor(private db: DatabaseHelper) {}
 
   async getInvoiceByAppointmentId(
     appointmentId: number,
-  ): Promise<Invoices | null> {
+  ): Promise<InvoiceResponseDto | null> {
     try {
       const procedureName = 'GetInvoiceByAppointmentId';
       const results = await this.db.callProcedure(procedureName, [
         appointmentId,
       ]);
       if (Array.isArray(results) && results.length > 0) {
-        return results[0];
+        return plainToInstance(InvoiceResponseDto, results[0]);
       } else return null;
     } catch (err: any) {
       throw new Error(err.message);
     }
   }
-  async createInvoice(invoice: Invoices): Promise<Invoices> {
+  async createInvoice(
+    invoice: InvoiceCreateDto,
+  ): Promise<InvoiceResponseDto> {
     try {
       const procedureName = 'CreateInvoice';
       const newInvoice = await this.db.callProcedure(procedureName, [
@@ -33,13 +41,13 @@ export class InvoiceService {
         invoice.patientName,
         invoice.patientPhone,
       ]);
-      return newInvoice;
+      return plainToInstance(InvoiceResponseDto, newInvoice);
     } catch (err: any) {
       throw new Error(err.message);
     }
   }
 
-  async updateInvoice(invoice: Invoices): Promise<any> {
+  async updateInvoice(invoice: InvoiceUpdateDto): Promise<any> {
     try {
       const procedureName = 'UpdateInvoices';
       await this.db.callProcedure(procedureName, [
@@ -66,12 +74,12 @@ export class InvoiceService {
       throw new Error(err.message);
     }
   }
-  async getRecentInvoice(): Promise<Invoices[] | null> {
+  async getRecentInvoice(): Promise<InvoiceResponseDto[] | null> {
     try {
       const procedureName = 'GetRecentInvoice';
       const results = await this.db.callProcedure(procedureName, []);
       if (Array.isArray(results) && results.length > 0) {
-        return results;
+        return plainToInstance(InvoiceResponseDto, results);
       } else return null;
     } catch (err: any) {
       throw new Error(err.message);
@@ -101,7 +109,7 @@ export class InvoiceService {
     pageIndex: number,
     pageSize: number,
     status: string,
-  ): Promise<any> {
+  ): Promise<InvoiceResponseDto[]> {
     try {
       const procedureName = 'ViewInvoice';
       const results = await this.db.callProcedure(procedureName, [
@@ -110,7 +118,7 @@ export class InvoiceService {
         status,
       ]);
       if (Array.isArray(results) && results.length > 0) {
-        return results;
+        return plainToInstance(InvoiceResponseDto, results);
       } else return null;
     } catch (err: any) {
       throw new Error(err.message);
