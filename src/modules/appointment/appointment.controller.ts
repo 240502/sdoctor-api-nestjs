@@ -4,6 +4,8 @@ import {
   Get,
   HttpException,
   HttpStatus,
+  InternalServerErrorException,
+  NotFoundException,
   Param,
   Post,
   Put,
@@ -151,7 +153,6 @@ export class AppointmentController {
   async getAppointmentInDay(
     @Param('doctorId') doctorId: number,
   ): Promise<any> {
-    console.log('doctorId', doctorId);
     try {
       const results: AppointmentResponseDto[] =
         await this.appointmentService.getAppointmentInDay(doctorId);
@@ -193,7 +194,30 @@ export class AppointmentController {
       );
     }
   }
-
+  @Put('/update-appointment-status')
+  @UseGuards(AuthGuard)
+  async updateAppointmentStatus(
+    @Body()
+    body: {
+      id: number;
+      status: number;
+      reason: string;
+    },
+  ): Promise<any> {
+    try {
+      const { id, status, reason } = body;
+      await this.appointmentService.updateAppointmentStatus(
+        id,
+        status,
+        reason,
+      );
+    } catch (err: any) {
+      throw new HttpException(
+        { statusCode: HttpStatus.BAD_REQUEST, message: err.message },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
   @Get('/get-total-examined-patient-in-day/:doctorId')
   async getTotalExaminedPatientInDay(
     @Param('doctorId') doctorId: number,
@@ -214,6 +238,72 @@ export class AppointmentController {
     } catch (err: any) {
       throw new HttpException(
         { statusCode: HttpStatus.BAD_REQUEST, message: err.message },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  @Post('get-appointments-by-status')
+  async getAppointmentsByStatus(
+    @Body()
+    body: {
+      pageIndex: number;
+      pageSize: number;
+      doctorId: number;
+      status: number;
+    },
+  ): Promise<any> {
+    try {
+      const { pageIndex, pageSize, doctorId, status } = body;
+      const appointments: AppointmentResponseDto[] =
+        await this.appointmentService.getAppointmentsByStatus(
+          pageIndex,
+          pageSize,
+          doctorId,
+          status,
+        );
+
+      if (appointments) {
+        return {
+          pageIndex: pageIndex,
+          pageSize: pageSize,
+          pageCount: Math.ceil(
+            appointments[0].recordCount / pageSize,
+          ),
+          totalItems: appointments[0].recordCount,
+          data: appointments,
+          doctorId: doctorId,
+          status: status,
+        };
+      }
+    } catch (err: any) {
+      const statusCode: number = err?.status;
+      throw new HttpException({ message: err.message }, statusCode);
+    }
+  }
+
+  @Post('/statistics-appointments-by-day')
+  @UseGuards(AuthGuard)
+  async statisticsAppointmentsByDay(
+    @Body()
+    body: {
+      startWeek: Date;
+      endWeek: Date;
+      doctorId: number;
+    },
+  ): Promise<any> {
+    try {
+      const { startWeek, endWeek, doctorId } = body;
+      const results =
+        await this.appointmentService.statisticsAppointmentsByDay(
+          startWeek,
+          endWeek,
+          doctorId,
+        );
+      return results;
+    } catch (err: any) {
+      throw new HttpException(
+        { message: err.message },
         HttpStatus.BAD_REQUEST,
       );
     }

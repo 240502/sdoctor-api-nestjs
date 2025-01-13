@@ -110,7 +110,6 @@ export class DoctorController {
           name,
           clinicId,
         );
-      console.log('data', data);
       if (results) {
         return {
           pageIndex: pageIndex,
@@ -190,7 +189,6 @@ export class DoctorController {
     try {
       const result =
         await this.doctorService.getDoctorByUserId(userId);
-      console.log(result);
       if (result) {
         return result;
       }

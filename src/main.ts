@@ -2,7 +2,10 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import * as bodyParser from 'body-parser';
+import * as dotenv from 'dotenv';
+dotenv.config();
 async function bootstrap() {
+  // Log giá trị của CLOUDINARY_API_KEY
   const app = await NestFactory.create(AppModule);
   // Bật CORS
   app.enableCors({

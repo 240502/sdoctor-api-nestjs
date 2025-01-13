@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  HttpException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { DatabaseHelper } from 'src/common/database/helper';
 import {
   AppointmentCreateDto,
@@ -88,7 +93,8 @@ export class AppointmentService {
         return null;
       }
     } catch (err: any) {
-      console.log(err.message);
+      const statusCode: number = Number(err?.status);
+      throw new HttpException({ message: err.message }, statusCode);
     }
   }
   async getAppointmentAtInvoice(
@@ -191,6 +197,49 @@ export class AppointmentService {
       return true;
     } catch (err: any) {
       throw new Error(err.message);
+    }
+  }
+
+  async statisticsAppointmentsByDay(
+    startWeek: Date,
+    endWeek: Date,
+    doctorId: number,
+  ): Promise<any> {
+    try {
+      const procedureName = 'StatisticsAppointmentsByDay';
+      const results = await this.db.callProcedure(procedureName, [
+        startWeek,
+        endWeek,
+        doctorId,
+      ]);
+      if (Array.isArray(results) && results.length > 0) {
+        return results;
+      } else return null;
+    } catch (err: any) {
+      throw new Error(err.message);
+    }
+  }
+
+  async getAppointmentsByStatus(
+    pageIndex: number,
+    pageSize: number,
+    doctorId: number,
+    status: number,
+  ): Promise<AppointmentResponseDto[] | null> {
+    try {
+      const procedureName = 'GetAppointmentsByStatus';
+      const results = await this.db.callProcedure(procedureName, [
+        pageIndex,
+        pageSize,
+        doctorId,
+        status,
+      ]);
+
+      if (Array.isArray(results) && results.length > 0) {
+        return plainToInstance(AppointmentResponseDto, results);
+      } else return null;
+    } catch (err: any) {
+      throw err;
     }
   }
 }

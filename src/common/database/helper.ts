@@ -28,7 +28,6 @@ export class DatabaseHelper {
       const [errorResults] = await queryRunner.query(
         `SELECT @err_code AS err_code ,@err_msg AS err_msg`,
       );
-
       const { err_code, err_msg } = errorResults;
       if (err_code === '0') {
         return results[0];
@@ -40,7 +39,15 @@ export class DatabaseHelper {
         }
       }
     } catch (err: any) {
-      throw new Error(err.message);
+      if (
+        err instanceof NotFoundException ||
+        err instanceof InternalServerErrorException
+      ) {
+        throw err;
+      } else {
+        throw new InternalServerErrorException(err.message);
+      }
+      // Nếu không phải, throw lại lỗi dưới dạng InternalServerErrorException
     } finally {
       await queryRunner.release();
     }

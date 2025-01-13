@@ -24,6 +24,8 @@ import { ServiceCategoryModule } from './modules/service-category/service-catego
 import { TimeModule } from './modules/time/time.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { UploadModule } from './modules/upload/upload.module';
+import { CloudinaryModule } from './config/cloudinary/cloudinary.module';
 @Module({
   imports: [
     ServeStaticModule.forRoot({
@@ -61,6 +63,8 @@ import { join } from 'path';
     PostCategoryModule,
     ServiceCategoryModule,
     TimeModule,
+    UploadModule,
+    CloudinaryModule,
   ],
   providers: [],
   controllers: [],

@@ -30,12 +30,11 @@ export class InvoiceService {
     invoice: InvoiceCreateDto,
   ): Promise<InvoiceResponseDto> {
     try {
-      const procedureName = 'CreateInvoice';
+      const procedureName = 'CreateInvoices';
       const newInvoice = await this.db.callProcedure(procedureName, [
         invoice.appointmentId,
         invoice.doctorId,
         invoice.serviceId,
-        invoice.amount,
         invoice.amount,
         invoice.paymentMethod,
         invoice.patientName,

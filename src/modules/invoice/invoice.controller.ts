@@ -123,7 +123,7 @@ export class InvoiceController {
     }
   }
 
-  @Post('get-total-revenue')
+  @Post('get-total-revenue-by-date-in-now-week')
   async getTotalRevenueByDateInNowWeek(
     @Body()
     body: {
@@ -140,16 +140,7 @@ export class InvoiceController {
           endWeek,
           doctorId,
         );
-      if (results === 0) {
-      } else {
-        throw new HttpException(
-          {
-            statusCode: HttpStatus.NOT_FOUND,
-            message: 'Không tồn tại bản ghi nào!',
-          },
-          HttpStatus.NOT_FOUND,
-        );
-      }
+      return results;
     } catch (err: any) {
       throw new HttpException(
         { message: err.message, statusCode: HttpStatus.BAD_REQUEST },
@@ -198,7 +189,7 @@ export class InvoiceController {
       );
     }
   }
-  @Put('update-status/')
+  @Put('update-status')
   async updateInvoiceStatus(
     @Body() body: { id: number; status: string },
   ): Promise<any> {

@@ -36,6 +36,10 @@ export class PostResDto {
   @Expose()
   image: string;
 
+  @Expose({ name: 'created_at' })
+  @Transform(({ value }) => (value ? new Date(value) : null))
+  createdAt: Date;
+
   @Expose({ name: 'RecordCount' })
   recordCount: number;
 }

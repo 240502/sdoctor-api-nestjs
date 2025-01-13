@@ -112,7 +112,9 @@ export class PostController {
           pageIndex: body.pageIndex,
           pageSize: body.pageSize,
           data: results,
-          pageCount: results[0].recordCount / body.pageSize,
+          pageCount: Math.ceil(
+            results[0].recordCount / body.pageSize,
+          ),
           totalItems: results[0].recordCount,
           status: body.status,
           authorId: body.authorId,
