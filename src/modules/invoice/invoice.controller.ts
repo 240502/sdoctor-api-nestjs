@@ -10,7 +10,6 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { InvoiceService } from './invoice.service';
-import { Invoices } from 'src/models';
 import {
   InvoiceCreateDto,
   InvoiceResponseDto,
@@ -100,10 +99,13 @@ export class InvoiceController {
     }
   }
 
-  @Get('get-recent')
-  async getRecentInvoice(): Promise<any> {
+  @Get('get-recent/:doctorId')
+  async getRecentInvoice(
+    @Param('doctorId') doctorId: number,
+  ): Promise<any> {
     try {
-      const results = await this.invoiceService.getRecentInvoice();
+      const results =
+        await this.invoiceService.getRecentInvoice(doctorId);
       if (results) {
         return results;
       } else {

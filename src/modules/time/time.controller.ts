@@ -8,6 +8,7 @@ import {
   Post,
 } from '@nestjs/common';
 import { TimeService } from './time.service';
+import { TimeResponseDto } from './dto';
 
 @Controller('time')
 export class TimeController {
@@ -41,27 +42,21 @@ export class TimeController {
   @Post('get-by-type')
   async getTimeByTimeType(
     @Body() body: { timeType: string },
-  ): Promise<void> {
+  ): Promise<TimeResponseDto[] | null> {
     try {
       const { timeType } = body;
       const result =
         await this.timeService.getTimeByTimeType(timeType);
       if (result) {
         return result;
-      } else
-        throw new HttpException(
-          {
-            message: 'Không tồn tại bản ghi',
-            data: timeType,
-          },
-          HttpStatus.NOT_FOUND,
-        );
+      }
     } catch (err: any) {
+      const statusCode = err?.status;
       throw new HttpException(
         {
           message: err.message,
         },
-        HttpStatus.BAD_REQUEST,
+        statusCode,
       );
     }
   }

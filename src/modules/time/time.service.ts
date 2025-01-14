@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseHelper } from 'src/common/database/helper';
+import { TimeResponseDto } from './dto';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class TimeService {
@@ -15,15 +17,17 @@ export class TimeService {
       throw new Error(err.message);
     }
   }
-  async getTimeByTimeType(type: string): Promise<any> {
+  async getTimeByTimeType(
+    type: string,
+  ): Promise<TimeResponseDto[] | null> {
     try {
       const sql = 'getTimeByTimeType';
       const results = await this.db.callProcedure(sql, [type]);
       if (Array.isArray(results) && results.length > 0) {
-        return results;
+        return plainToInstance(TimeResponseDto, results);
       } else return null;
     } catch (err: any) {
-      throw new Error(err.message);
+      throw err;
     }
   }
 }

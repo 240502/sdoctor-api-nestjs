@@ -73,10 +73,14 @@ export class InvoiceService {
       throw new Error(err.message);
     }
   }
-  async getRecentInvoice(): Promise<InvoiceResponseDto[] | null> {
+  async getRecentInvoice(
+    doctorId: number,
+  ): Promise<InvoiceResponseDto[] | null> {
     try {
       const procedureName = 'GetRecentInvoice';
-      const results = await this.db.callProcedure(procedureName, []);
+      const results = await this.db.callProcedure(procedureName, [
+        doctorId,
+      ]);
       if (Array.isArray(results) && results.length > 0) {
         return plainToInstance(InvoiceResponseDto, results);
       } else return null;

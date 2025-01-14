@@ -86,12 +86,14 @@ export class DoctorScheduleService {
   async viewSchedule(
     date: Date,
     doctorId: number,
+    viewType: string,
   ): Promise<DoctorScheduleResponseDto | null> {
     try {
       const procedureName = 'ViewSchedule';
       const results = await this.db.callProcedure(procedureName, [
         doctorId,
         date,
+        viewType,
       ]);
       console.log(results);
 
@@ -99,15 +101,6 @@ export class DoctorScheduleService {
         const listScheduleDetails: DoctorScheduleDetailResponseDto[] =
           [];
         for (let i = 0; i < results.length; i++) {
-          let time: Time = {
-            id: results[i].time_id,
-            startTime: results[i].start_time,
-            endTime: results[i].end_time,
-            interval: null,
-            appointments: null,
-            doctorScheduleDetails: null,
-            serviceScheduleDetails: null,
-          };
           let ScheduleDetail: DoctorScheduleDetailResponseDto = {
             id: results[i].schedule_detail_id,
             scheduleId: results[i].schedule_id,
@@ -129,7 +122,7 @@ export class DoctorScheduleService {
         return schedule;
       } else return null;
     } catch (err: any) {
-      throw new Error(err.message);
+      throw err;
     }
   }
 }

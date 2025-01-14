@@ -75,22 +75,24 @@ export class DoctorScheduleController {
 
   @Post('view')
   async viewSchedule(
-    @Body() body: { date: Date; doctorId: number },
+    @Body() body: { date: Date; doctorId: number; viewType: string },
   ): Promise<any> {
     try {
-      const { date, doctorId } = body;
+      const { date, doctorId, viewType } = body;
       const result = await this.doctorScheduleService.viewSchedule(
         date,
         doctorId,
+        viewType,
       );
-      console.log(body);
       if (result) {
         return result;
       }
     } catch (err: any) {
+      console.log(err);
+      const statusCode = err?.status;
       throw new HttpException(
-        { message: err.message, statusCode: HttpStatus.BAD_REQUEST },
-        HttpStatus.BAD_REQUEST,
+        { message: err.message, statusCode: statusCode },
+        statusCode,
       );
     }
   }
