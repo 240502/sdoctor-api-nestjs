@@ -40,6 +40,7 @@ import { CloudinaryModule } from './config/cloudinary/cloudinary.module';
       database: 'sdoctor',
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
+      timezone: '+07:00', // Thay múi giờ phù hợp
     }),
     RoleModule,
     DoctorModule,

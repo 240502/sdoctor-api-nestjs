@@ -88,7 +88,6 @@ export class DoctorScheduleController {
         return result;
       }
     } catch (err: any) {
-      console.log(err);
       const statusCode = err?.status;
       throw new HttpException(
         { message: err.message, statusCode: statusCode },

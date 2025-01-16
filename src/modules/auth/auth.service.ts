@@ -25,14 +25,12 @@ export class AuthService {
   }
 
   async signIn(auth: LoginModel): Promise<any> {
-    console.log('auth', auth);
     try {
       const procedureName = 'Login';
       const results = await this.databaseHelper.callProcedure(
         procedureName,
         [auth.email],
       );
-      console.log(results);
       if (results.length === 0) {
         throw new Error('Email không tồn tại!');
       }
@@ -94,7 +92,6 @@ export class AuthService {
   async signUp(auth: AccountCreateModel): Promise<any> {
     try {
       const hash = await argon.hash(auth.password);
-      console.log(auth);
       const procedureName = 'CreateAccount';
       await this.databaseHelper.callProcedure(procedureName, [
         auth.userId,

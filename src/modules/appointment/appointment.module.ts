@@ -4,12 +4,16 @@ import { AppointmentService } from './appointment.service';
 import { DatabaseHelper } from 'src/common/database/helper';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Appointment } from 'src/models';
-import { AppointmentGateway } from './gateway/appointment.gateway';
 import { AuthModule } from '../auth/auth.module';
+import { SocketModule } from 'src/common/shared/socket.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Appointment]), AuthModule],
+  imports: [
+    TypeOrmModule.forFeature([Appointment]),
+    AuthModule,
+    SocketModule,
+  ],
   controllers: [AppointmentController],
-  providers: [AppointmentService, DatabaseHelper, AppointmentGateway],
+  providers: [AppointmentService, DatabaseHelper],
 })
 export class AppointmentModule {}

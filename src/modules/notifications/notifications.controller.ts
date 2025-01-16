@@ -11,16 +11,22 @@ import {
 } from '@nestjs/common';
 import { NotificationsService } from './notifications.service';
 import { Notifications } from 'src/models';
+import { NotificationResDto } from './dto';
+import { SocketGateway } from 'src/common/shared/base.gateway';
+import { NotificationCreateDto } from './dto/notification-create.dto';
 @Controller('notifications')
 export class NotificationsController {
-  constructor(private notificationService: NotificationsService) {}
+  constructor(
+    private notificationService: NotificationsService,
+    private readonly socketGateway: SocketGateway,
+  ) {}
 
   @Get('get-by-user-id/:userId')
   async getNotificationByUserId(
     @Param('userId') userId: number,
   ): Promise<any> {
     try {
-      const results =
+      const results: NotificationResDto[] =
         await this.notificationService.getNotificationByUserId(
           userId,
         );
@@ -77,15 +83,22 @@ export class NotificationsController {
 
   @Post('create')
   async createNotification(
-    @Body() notification: Notifications,
+    @Body() notification: NotificationCreateDto,
   ): Promise<any> {
     try {
-      const result =
+      const result: NotificationResDto =
         await this.notificationService.createNotification(
           notification,
         );
-      if (result)
+      if (result) {
+        const roomName = `user:${result.userId}`;
+        this.socketGateway.emitToRoom(
+          roomName,
+          'newNotification',
+          result,
+        );
         return { message: 'Created successfully', result: result };
+      }
     } catch (err: any) {
       throw new HttpException(
         { statusCode: HttpStatus.BAD_REQUEST, message: err.message },

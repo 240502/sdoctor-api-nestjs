@@ -5,7 +5,6 @@ import {
   HttpStatus,
   Post,
 } from '@nestjs/common';
-import { Comment } from 'src/models';
 import { CommentService } from './comment.service';
 import { CommentCreateDto, CommentReposeDto } from './dto';
 @Controller('comment')
@@ -72,15 +71,8 @@ export class CommentController {
       }
     } catch (err: any) {
       // Nếu lỗi là một HttpException, trả về lỗi gốc mà không ghi đè
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      // Ghi đè chỉ khi lỗi không phải HttpException
-      throw new HttpException(
-        { statusCode: HttpStatus.BAD_REQUEST, message: err.message },
-        HttpStatus.BAD_REQUEST,
-      );
+      const statusCode: number = err.status;
+      throw new HttpException({ message: err.message }, statusCode);
     }
   }
 }

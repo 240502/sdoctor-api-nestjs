@@ -10,19 +10,19 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AppointmentService } from './appointment.service';
-import { AppointmentGateway } from './gateway';
 import {
   AppointmentCreateDto,
   AppointmentFilterDto,
   AppointmentResponseDto,
 } from './dto';
 import { AuthGuard } from 'src/common/guards';
+import { SocketGateway } from 'src/common/shared/base.gateway';
 
 @Controller('/appointment')
 export class AppointmentController {
   constructor(
     private appointmentService: AppointmentService,
-    private readonly appointmentGateway: AppointmentGateway,
+    private readonly socketGateway: SocketGateway,
   ) {}
 
   @Post('/create')
@@ -33,7 +33,8 @@ export class AppointmentController {
       const result: AppointmentResponseDto =
         await this.appointmentService.createAppointment(appointment);
       if (result) {
-        this.appointmentGateway.notifyToAllClient(result);
+        const eventName = 'newAppointment';
+        this.socketGateway.emitToAll(eventName, result);
         return result;
       }
     } catch (err: any) {

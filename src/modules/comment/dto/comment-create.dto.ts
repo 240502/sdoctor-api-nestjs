@@ -1,10 +1,4 @@
-import {
-  IsNotEmpty,
-  IsString,
-  IsNumber,
-  IsDate,
-  IsPhoneNumber,
-} from 'class-validator';
+import { IsNotEmpty, IsString, IsNumber } from 'class-validator';
 
 export class CommentCreateDto {
   @IsNotEmpty()
@@ -16,7 +10,7 @@ export class CommentCreateDto {
   content: string;
 
   @IsNotEmpty()
-  @IsPhoneNumber()
+  @IsString()
   phone: string;
 
   @IsNotEmpty()

@@ -1,20 +1,29 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseHelper } from 'src/common/database/helper';
 import { Notifications } from 'src/models';
+import { NotificationResDto } from './dto';
+import { plainToInstance } from 'class-transformer';
+import { NotificationCreateDto } from './dto/notification-create.dto';
 @Injectable()
 export class NotificationsService {
   constructor(private db: DatabaseHelper) {}
 
   async getNotificationByUserId(
     userId: number,
-  ): Promise<Notifications[] | null> {
+  ): Promise<NotificationResDto[] | null> {
     try {
-      const procedureName = 'GetNotificationByUserId';
+      const procedureName = 'GetNotificationsByUserId';
       const results = await this.db.callProcedure(procedureName, [
         userId,
       ]);
+      const formatResults: any[] = results.map((item: any) => {
+        return {
+          ...item,
+          createdAt: item.created_at.toString().split('Z')[0],
+        };
+      });
       if (Array.isArray(results) && results.length > 0) {
-        return results;
+        return plainToInstance(NotificationResDto, formatResults);
       } else return null;
     } catch (err: any) {
       throw new Error(err.message);
@@ -39,8 +48,8 @@ export class NotificationsService {
   }
 
   async createNotification(
-    notification: Notifications,
-  ): Promise<Notifications | null> {
+    notification: NotificationCreateDto,
+  ): Promise<NotificationResDto | null> {
     try {
       const procedureName = 'CreateNotification';
       const results = await this.db.callProcedure(procedureName, [
@@ -49,7 +58,7 @@ export class NotificationsService {
         notification.appointmentId,
       ]);
       if (results) {
-        return results;
+        return plainToInstance(NotificationResDto, results[0]);
       }
     } catch (err: any) {
       throw new Error(err.message);

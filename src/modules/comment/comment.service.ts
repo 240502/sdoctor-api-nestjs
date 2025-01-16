@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { Comment } from 'src/models';
 import { DatabaseHelper } from 'src/common/database/helper';
 import { CommentCreateDto, CommentReposeDto } from './dto';
 import { plainToInstance } from 'class-transformer';
