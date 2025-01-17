@@ -17,15 +17,12 @@ export class CommentReposeDto {
   @Expose({ name: 'doctor_id' })
   doctorId: number;
 
-  @Expose({ name: 'phone' })
-  phone: string;
-
   @Expose({ name: 'full_name' })
   fullName: string;
 
-  @Expose()
-  type: string;
-
   @Expose({ name: 'star_count' })
-  strarCount: number;
+  starCount: number;
+
+  @Expose({ name: 'created_at' })
+  createdAt: Date;
 }

@@ -42,17 +42,15 @@ export class CommentController {
       pageIndex: number;
       pageSize: number;
       doctorId: number;
-      type: string;
     },
   ): Promise<any> {
     try {
-      const { pageIndex, pageSize, doctorId, type } = body;
+      const { pageIndex, pageSize, doctorId } = body;
       const results: CommentReposeDto[] =
         await this.commentService.getCommentByDoctorId(
           pageIndex,
           pageSize,
           doctorId,
-          type,
         );
       if (results) {
         return {
@@ -63,11 +61,6 @@ export class CommentController {
           totalItems: results[0].recordCount,
           pageCount: Math.ceil(results[0].recordCount / pageSize),
         };
-      } else {
-        throw new HttpException(
-          { statusCode: HttpStatus.NOT_FOUND, message: 'Not found' },
-          HttpStatus.NOT_FOUND,
-        );
       }
     } catch (err: any) {
       // Nếu lỗi là một HttpException, trả về lỗi gốc mà không ghi đè

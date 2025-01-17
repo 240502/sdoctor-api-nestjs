@@ -31,6 +31,7 @@ export class DatabaseHelper {
       if (err_code === '0') {
         return results[0];
       } else {
+        console.log(err_code);
         if (err_code === '-1') {
           throw new NotFoundException(err_msg);
         } else {

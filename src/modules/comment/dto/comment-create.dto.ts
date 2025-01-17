@@ -20,4 +20,7 @@ export class CommentCreateDto {
   @IsNotEmpty()
   @IsNumber()
   starCount: number;
+
+  @IsNotEmpty()
+  dateBooking: string;
 }

@@ -14,9 +14,16 @@ export class CommentService {
         comment.fullName,
         comment.doctorId,
         comment.starCount,
+        comment.dateBooking,
       ]);
       if (Array.isArray(results) && results.length > 0) {
-        return plainToInstance(CommentReposeDto, results[0]);
+        const dateFormatted = results[0].created_at
+          ? results[0].created_at.toString().split('Z')[0]
+          : null;
+        return plainToInstance(CommentReposeDto, {
+          ...results[0],
+          created_at: dateFormatted,
+        });
       } else {
         return null;
       }
@@ -28,7 +35,6 @@ export class CommentService {
     pageIndex: number,
     pageSize: number,
     doctorId: number,
-    type: string,
   ): Promise<CommentReposeDto[] | null> {
     try {
       const procedureName = 'GetCommentByDoctorId';
@@ -36,17 +42,20 @@ export class CommentService {
         pageIndex,
         pageSize,
         doctorId,
-        type,
       ]);
+      const formattedResults: any[] = results.map((result: any) => {
+        return {
+          ...result,
+          created_at: result.created_at
+            ? result.created_at.toString().split('Z')[0]
+            : null,
+        };
+      });
       if (Array.isArray(results) && results.length > 0) {
-        return plainToInstance(CommentReposeDto, results);
+        return plainToInstance(CommentReposeDto, formattedResults);
       }
     } catch (err: any) {
-      console.log(err);
-      if (err.err_code) {
-        // Ném lại lỗi từ helper
-      }
-      throw new Error(err.message);
+      throw err;
     }
   }
 }
