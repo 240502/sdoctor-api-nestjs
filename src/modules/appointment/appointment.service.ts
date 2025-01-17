@@ -43,9 +43,13 @@ export class AppointmentService {
       ]);
 
       if (Array.isArray(data) && data.length > 0) {
+        const formattedAppointment = {
+          ...data[0],
+          createdAt: data[0].created_at.toString().split('Z')[0],
+        };
         const appointment = plainToInstance(
           AppointmentResponseDto,
-          data[0],
+          formattedAppointment,
         );
         return appointment;
       } else return null;

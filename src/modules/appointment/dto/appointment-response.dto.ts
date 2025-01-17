@@ -45,11 +45,9 @@ export class AppointmentResponseDto {
   statusId: number | null;
 
   @Expose({ name: 'created_at' })
-  @Transform(({ value }) => (value ? new Date(value) : null))
   createdAt: Date | null;
 
   @Expose({ name: 'updated_at' })
-  @Transform(({ value }) => (value ? new Date(value) : null))
   updatedAt: Date | null;
 
   @Expose({ name: 'price' })

@@ -95,7 +95,6 @@ export class DoctorScheduleService {
         date,
         viewType,
       ]);
-      console.log(results);
 
       if (Array.isArray(results) && results.length > 0) {
         const listScheduleDetails: DoctorScheduleDetailResponseDto[] =

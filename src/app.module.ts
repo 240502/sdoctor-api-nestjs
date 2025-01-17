@@ -26,6 +26,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { UploadModule } from './modules/upload/upload.module';
 import { CloudinaryModule } from './config/cloudinary/cloudinary.module';
+import { PaymentModule } from './modules/payment/payment.module';
 @Module({
   imports: [
     ServeStaticModule.forRoot({
@@ -66,6 +67,7 @@ import { CloudinaryModule } from './config/cloudinary/cloudinary.module';
     TimeModule,
     UploadModule,
     CloudinaryModule,
+    PaymentModule,
   ],
   providers: [],
   controllers: [],
