@@ -3,6 +3,7 @@ import {
   IsEmail,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsPhoneNumber,
   IsString,
 } from 'class-validator';
@@ -41,6 +42,7 @@ export class AppointmentCreateDto {
   @IsNotEmpty()
   commune: string;
 
+  @IsOptional()
   examinationReason: string;
 
   @IsNotEmpty()

@@ -82,7 +82,13 @@ export class InvoiceService {
         doctorId,
       ]);
       if (Array.isArray(results) && results.length > 0) {
-        return plainToInstance(InvoiceResponseDto, results);
+        const formattedInvoices = results.map((invoice) => {
+          return {
+            ...invoice,
+            created_at: invoice.created_at.toString().split('Z')[0],
+          };
+        });
+        return plainToInstance(InvoiceResponseDto, formattedInvoices);
       } else return null;
     } catch (err: any) {
       throw new Error(err.message);

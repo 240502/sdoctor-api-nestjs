@@ -137,12 +137,14 @@ export class ClinicController {
   }
 
   @Get('get-by-id/:id')
-  async getClinicById(@Param('id') id: number): Promise<any> {
+  async getClinicById(
+    @Param('id') id: number,
+  ): Promise<ClinicResponseDto> {
     try {
-      const results: ClinicResponseDto =
+      const result: ClinicResponseDto =
         await this.clinicService.getClinicById(id);
-      if (Array.isArray(results) && results.length > 0) {
-        return results[0];
+      if (result) {
+        return result;
       } else
         throw new HttpException(
           {

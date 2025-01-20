@@ -10,7 +10,6 @@ export class InvoiceResponseDto {
   appointmentId: number;
 
   @Expose({ name: 'appointment_date' })
-  @Transform(({ value }) => (value ? new Date(value) : null))
   appointmentDate: Date;
 
   @Expose({ name: 'doctor_id' })
@@ -23,15 +22,12 @@ export class InvoiceResponseDto {
   status: string;
 
   @Expose({ name: 'created_at' })
-  @Transform(({ value }) => (value ? new Date(value) : null))
   createdAt: Date;
 
   @Expose({ name: 'updated_at' })
-  @Transform(({ value }) => (value ? new Date(value) : null))
   updatedAt: Date;
 
   @Expose({ name: 'payment_date' })
-  @Transform(({ value }) => (value ? new Date(value) : null))
   paymentDate: Date;
 
   @Expose({ name: 'payment_method' })

@@ -21,7 +21,7 @@ export class ClinicResponseDto {
 
   @Expose({ name: 'cover_image' })
   @Transform(({ value }) => (value ? value : null))
-  coveImage: string | null;
+  coverImage: string | null;
 
   @Expose({ name: 'created_at' })
   @Transform(({ value }) => (value ? new Date(value) : null))

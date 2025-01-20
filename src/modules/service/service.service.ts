@@ -110,7 +110,7 @@ export class ServiceService {
         return plainToInstance(ServiceResDto, results);
       } else return null;
     } catch (err: any) {
-      throw new Error(err.message);
+      throw err;
     }
   }
   async getCommonService(): Promise<ServiceResDto[] | null> {
@@ -121,7 +121,7 @@ export class ServiceService {
         return plainToInstance(ServiceResDto, results);
       } else return null;
     } catch (err: any) {
-      throw new Error(err.message);
+      throw err;
     }
   }
 }

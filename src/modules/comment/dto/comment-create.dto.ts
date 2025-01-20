@@ -11,10 +11,6 @@ export class CommentCreateDto {
 
   @IsNotEmpty()
   @IsString()
-  phone: string;
-
-  @IsNotEmpty()
-  @IsString()
   fullName: string;
 
   @IsNotEmpty()

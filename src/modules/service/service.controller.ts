@@ -135,17 +135,10 @@ export class ServiceController {
           clinicId: body.clinicId,
           categoryId: body.categoryId,
         };
-      } else {
-        throw new HttpException(
-          { statusCode: HttpStatus.NOT_FOUND, message: 'Not found!' },
-          HttpStatus.NOT_FOUND,
-        );
       }
     } catch (err: any) {
-      throw new HttpException(
-        { statusCode: HttpStatus.BAD_REQUEST },
-        HttpStatus.BAD_REQUEST,
-      );
+      console.log(err.status);
+      throw new HttpException({ message: err.message }, err.status);
     }
   }
 

@@ -16,6 +16,7 @@ export class CommentController {
     @Body() comment: CommentCreateDto,
   ): Promise<any> {
     try {
+      console.log(comment);
       const result: CommentReposeDto =
         await this.commentService.createComment(comment);
       if (result) {

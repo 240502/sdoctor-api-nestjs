@@ -45,7 +45,7 @@ export class PaymentController {
         embed_data: JSON.stringify(embed_data),
         amount: invoice.amount,
         callback_url:
-          'https://26c0-14-247-77-136.ngrok-free.app/payment/callback',
+          'https://b25d-14-247-77-136.ngrok-free.app/payment/callback',
         description: `Thanh toán phí hẹn khám`,
         bank_code: '',
         mac: '',
