@@ -90,10 +90,10 @@ export class DoctorController {
     } catch (err: any) {
       throw new HttpException(
         {
-          statusCode: HttpStatus.BAD_REQUEST,
+          statusCode: err.status,
           message: err.message,
         },
-        HttpStatus.BAD_REQUEST,
+        err.status,
       );
     }
   }

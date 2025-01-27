@@ -78,7 +78,7 @@ export class PostService {
         return plainToInstance(PostResDto, results);
       } else return null;
     } catch (err: any) {
-      throw new Error(err.message);
+      throw err;
     }
   }
   async getCommonPost(): Promise<PostResDto[]> {

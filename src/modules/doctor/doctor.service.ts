@@ -58,7 +58,7 @@ export class DoctorService {
         return null;
       }
     } catch (err: any) {
-      throw new Error(err);
+      throw err;
     }
   }
 

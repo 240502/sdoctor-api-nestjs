@@ -86,7 +86,7 @@ export class ClinicService {
         return null;
       }
     } catch (err: any) {
-      throw new Error(err.message);
+      throw err;
     }
   }
   async getClinicById(id: number): Promise<ClinicResponseDto | null> {

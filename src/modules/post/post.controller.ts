@@ -125,9 +125,9 @@ export class PostController {
       throw new HttpException(
         {
           message: err.message,
-          statusCode: HttpStatus.BAD_REQUEST,
+          statusCode: err.status,
         },
-        HttpStatus.BAD_REQUEST,
+        err.status,
       );
     }
   }

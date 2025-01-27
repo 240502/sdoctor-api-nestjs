@@ -116,22 +116,14 @@ export class ClinicController {
             results[0].recordCount / body.pageSize,
           ),
         };
-      } else {
-        throw new HttpException(
-          {
-            message: 'Not found',
-            statusCode: HttpStatus.NOT_FOUND,
-          },
-          HttpStatus.NOT_FOUND,
-        );
       }
     } catch (err: any) {
       throw new HttpException(
         {
-          statusCode: HttpStatus.BAD_GATEWAY,
+          statusCode: err.status,
           message: err.message,
         },
-        HttpStatus.BAD_REQUEST,
+        err.status,
       );
     }
   }
